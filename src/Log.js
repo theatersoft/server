@@ -12,7 +12,7 @@ var
 
 db = new Nedb({filename: filename(), autoload: true})
 
-module.exports = {
+export default {
     rpc: {
         find: function (args) {
             return new Promise(function(resolve, reject) {

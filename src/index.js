@@ -1,6 +1,11 @@
-'use strict'
+import {bus, executor, log, setTag} from '@theatersoft/bus'
+import Session from './Session'
+import Config from './Config'
+import web from './Web'
+import rpc from './Rpc'
+import imageProxy from './ImageProxy'
+
 const
-    {bus, executor, log, setTag} = require('@theatersoft/bus'),
     fs = require('fs'),
     root = (() => {
         try {
@@ -12,9 +17,8 @@ const
     auth = process.env.AUTH || read('.auth'),
     url = process.env.BUS || read('.bus'),
     parent = !root && url && {url, auth},
-    {check} = require('./Session'),
-    server = executor(),
-    Config = require('./Config')
+    {check} = Session,
+    server = executor()
 
 setTag('Theatersoft')
 log({parent, children: {server: 'Promise', check}})
@@ -27,15 +31,12 @@ bus.start({parent, children: {server: server.promise, check}})
 root && Config.loaded
     .then(() => {
         const
-            web = require('./Web'),
-            rpc = require('./Rpc'),
-            imageProxy = require('./ImageProxy'),
             https = require('https'),
             express = require('express'),
             app = express(),
             port = process.env.PORT || 443
 
-        web.init(express, app)
+        web(express, app)
         app.use((req, res, next) => {
             res.setHeader('Access-Control-Allow-Origin', req.get('origin') || '*')
             res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')

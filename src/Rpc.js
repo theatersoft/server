@@ -1,20 +1,21 @@
-'use strict'
+import config from './Config'
+import log from './Log'
+import session from './Session'
+import Log from './Log'
+
 const
-    config = require('./Config'),
-    log = require('./Log'),
-    session = require('./Session'),
     https = require('https'),
     targets = Object.assign({
             Session: session.rpc,
-            Log: require('./Log').rpc,
+            Log: log.rpc,
             Rpc: {
                 get () {
                     console.log('Rpc.get')
                     return targets
                 }
             }
-        },
-        require('./ChildProcess')
+        }
+        //require('./ChildProcess')
     ),
     invoke = (host, method, args, res, req) => {
         let s = method && method.split('.'),
@@ -96,7 +97,7 @@ const
         })
     }
 
-module.exports = {
+export default {
     get (req, res) {invoke(req.query.host, req.query.method, req.query.args && JSON.parse(req.query.args), res, req)},
     post (req, res) {invoke(req.body.host, req.body.method, req.body.args, res, req)},
     request

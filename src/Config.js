@@ -1,7 +1,7 @@
-'use strict'
+import {bus, executor, proxy} from '@theatersoft/bus'
+import log from './Log'
+
 const
-    {bus, executor, proxy} = require('@theatersoft/bus'),
-    log = require('./Log'),
     fs = require('fs'),
     os = require('os'),
     read = () => JSON.parse(fs.readFileSync(`${process.env.HOME}/.config/theatersoft/config.json`, 'utf8')),
@@ -52,7 +52,7 @@ const Config = new class {
     }
 }
 
-module.exports = {
+export default {
     get loaded () {
         return loaded.promise
     },

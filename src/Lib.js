@@ -6,7 +6,7 @@ var
     tsUrl = 'https://rhuehn.homeip.net' + ':' + port + prefix,
     jar = request.jar()
 
-module.exports = {
+export default {
     rpc: function (method, args, cb) {
         request({
             url: tsUrl + '/rpc',

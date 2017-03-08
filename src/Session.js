@@ -1,6 +1,7 @@
+import log from './Log'
+import config from './Config'
+
 const
-    log = require('./Log'),
-    config = require('./Config'),
     Nedb = require('nedb'),
     db = new Nedb({filename: `${process.env.HOME}/.config/theatersoft/session.db`, autoload: true}),
     cache = {},
@@ -29,7 +30,7 @@ const
         return id
     }
 
-module.exports = {
+export default {
     checkSession (req) {
         if (!config.host.root)
             return Promise.resolve(true)
@@ -52,7 +53,7 @@ module.exports = {
     rpc: {
         Login (args, res, req) {
             if (args.length == 1 && args[0] == '0654') {
-                sid = createSession(req)
+                const sid = createSession(req)
                 console.log(sid)
                 res.cookie('sid', sid, {
                     // avoid duplicate cookie browser issues; don't specify an explicit domain

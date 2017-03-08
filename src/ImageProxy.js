@@ -1,10 +1,11 @@
-const
-    request = require('request'),
-//        http = require('http'),
-    config = require('./Config'),
-    session = require('./Session')
+import config from './Config'
+import session from './Session'
 
-module.exports = {
+const
+    request = require('request')
+//        http = require('http'),
+
+export default {
     get (req, res) {
         const cam = config.cameras[req.params.name]
         if (cam) {

@@ -1,15 +1,15 @@
-'use strict'
+import session from './Session'
+
 const
     fs = require('fs'),
     path = require('path'),
     DEV = process.env.NODE_ENV === 'development',
-    session = require('./Session'),
     client = path.join(process.cwd(), '../client'),
     root = p =>path.join(client, p)
 
 console.log('client', client)
 
-exports.init = (express, app) => {
+export default function web (express, app) {
     if (!DEV) {
         app.all(/dev/, (req, res, next) => {
             session.checkSession(req).then(found => {
