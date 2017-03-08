@@ -137,8 +137,8 @@ function Pipeline (device) {
     })
 }
 
-module.exports = {
-    create: function (device) {
+export default {
+    create (device) {
         return new Pipeline(device)
     }
 }

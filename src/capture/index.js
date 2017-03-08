@@ -1,4 +1,5 @@
-'use strict'
+import imagePipeline from './ImagePipeline'
+
 const
     {bus, proxy} = require('@theatersoft/bus'),
     fs = require('fs'),
@@ -6,7 +7,6 @@ const
     auth = read('.auth'),
     url = read('.bus'),
     parent = {url, auth},
-    imagePipeline = require('./ImagePipeline'),
     pipelines = []
 
 bus.start({parent})
