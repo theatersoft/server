@@ -1,0 +1,10 @@
+[Unit]
+Description=Theatersoft server
+
+[Service]
+WorkingDirectory=/opt/theatersoft/server/
+Environment=HOME=/opt/theatersoft
+ExecStart=/usr/local/bin/node src/theatersoft.js
+
+[Install]
+WantedBy=multi-user.target

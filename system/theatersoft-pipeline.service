@@ -1,0 +1,13 @@
+[Unit]
+Description=Theatersoft pipeline server
+#Requires=theatersoft.service
+After=theatersoft.service
+
+[Service]
+WorkingDirectory=/opt/theatersoft/server/
+Environment="HOME=/opt/theatersoft"
+ExecStartPre=/bin/sleep 2
+ExecStart=/usr/local/bin/node src/pipeline-server.js
+
+[Install]
+WantedBy=multi-user.target
