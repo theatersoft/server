@@ -64,12 +64,15 @@ const targets = {
 
     package () {
         const p = Object.entries(pkg).reduce((o, [k, v]) => {
-            if (!['private', 'devDependencies', 'scripts'].includes(k)) o[k] = v
+            if (!['private', 'devDependencies', 'scripts'].includes(k)) {
+                if ('distScripts' === k) k = 'scripts'
+                o[k] = v
+            }
             return o
         }, {})
         fs.writeFileSync('dist/package.json', JSON.stringify(p, null, '  '), 'utf-8')
         exec('sed -i "s|dist/||g" dist/package.json ')
-        exec('cp LICENSE README.md dist')
+        exec('cp LICENSE README.md src/capture/capture-server.js dist')
     },
 
     publish () {
