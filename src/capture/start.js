@@ -2,7 +2,7 @@
 const
     {bus} = require('@theatersoft/bus'),
     options = {
-        module: '@theatersoft/server/capture',
+        module: '@theatersoft/server/capture/capture',
         export: 'Capture'
     },
     service = new (require(options.module)[options.export])()

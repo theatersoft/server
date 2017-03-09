@@ -37,11 +37,11 @@ const
     nodeResolve = require('rollup-plugin-node-resolve')({jsnext: true})
 
 const targets = {
-    node (name, dir) {
+    node (src, dst) {
         console.log('target node')
         exec('mkdir -p dist')
         rollup.rollup({
-                entry: `${dir}/index.js`,
+                entry: `${src}/index.js`,
                 external: [
                     'util',
                     'fs',
@@ -53,13 +53,13 @@ const targets = {
                 ]
             })
             .then(bundle => bundle.write({
-                dest: `dist/${name}.js`,
+                dest: `dist/${dst}.js`,
                 format: 'cjs',
-                moduleName: name,
+                moduleName: path.basename(dst),
                 banner: copyright,
                 sourceMap: DIST ? false : 'inline'
             }))
-            .then(() => console.log(`wrote dist/${name}.js`))
+            .then(() => console.log(`wrote dist/${dst}.js`))
     },
 
     package () {
@@ -72,7 +72,14 @@ const targets = {
         }, {})
         fs.writeFileSync('dist/package.json', JSON.stringify(p, null, '  '), 'utf-8')
         exec('sed -i "s|dist/||g" dist/package.json ')
-        exec('cp LICENSE README.md src/capture/capture-server.js dist')
+        exec('cp LICENSE README.md dist')
+        exec('cp src/capture/start.js dist/capture')
+        //exec('cd dist/capture; ln -sf ../../src/capture/start.js')
+    },
+
+    tar () {
+        exec(`cd build; tar vchf ../${name} . --exclude='*/.*' --exclude='server/node_modules';`)
+        exec(`gzip ${name}`)
     },
 
     publish () {
@@ -81,8 +88,8 @@ const targets = {
     },
 
     async all () {
-        await targets.node('server', 'src')
-        await targets.node('capture', 'src/capture')
+        await targets.node('src', 'server')
+        await targets.node('src/capture', 'capture/capture')
         targets.package()
     }
 }
