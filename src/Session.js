@@ -52,7 +52,7 @@ export default {
 
     rpc: {
         Login (args, res, req) {
-            if (args.length == 1 && args[0] == '0654') {
+            if (args.length == 1 && args[0] === config.config.password) {
                 const sid = createSession(req)
                 console.log(sid)
                 res.cookie('sid', sid, {
