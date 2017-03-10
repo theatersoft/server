@@ -7,34 +7,30 @@ import imageProxy from './ImageProxy'
 
 const
     fs = require('fs'),
-    root = (() => {
-        try {
-            fs.accessSync(`${process.env.HOME}/.config/theatersoft/config.json`);
-            return true
-        } catch (e) {return false}
-    })(),
     read = n => {try {return fs.readFileSync(`${process.env.HOME}/.config/theatersoft/${n}`, 'utf8').trim()} catch (e) {}},
-    auth = process.env.AUTH || read('.auth'),
-    url = process.env.BUS || read('.bus'),
-    parent = !root && url && {url, auth},
+    port = process.env.PORT,
+    auth = process.env.AUTH,
+    url = process.env.BUS,
+    parent = url && {url, auth},
     {check} = Session,
-    server = executor()
+    server = executor(),
+    children = port && {server: server.promise, check}
 
 setTag('Theatersoft')
-log({parent, children: {server: 'Promise', check}})
+log({parent, children})
 
-bus.start({parent, children: {server: server.promise, check}})
+bus.start({parent, children})
     .then(bus => {
         console.log(`bus name is ${bus.name}`)
     })
 
-root && Config.loaded
+if (!port) log('missing PORT (server not started)')
+port && Config.loaded
     .then(() => {
         const
             https = require('https'),
             express = require('express'),
-            app = express(),
-            port = process.env.PORT || 443
+            app = express()
 
         web(express, app)
         app.use((req, res, next) => {
