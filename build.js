@@ -74,9 +74,6 @@ const targets = {
         exec('sed -i "s|dist/||g" dist/package.json ')
         exec('cp LICENSE README.md dist')
         exec('cp src/capture/start.js dist/capture')
-    },
-
-    tar () {
         const tname = `${name}-${pkg.version}.tar`
         exec(`cd dist; tar vchf ${tname} . --exclude='${name}-*' --exclude='client' --exclude='node_modules'; gzip -f ${tname}`)
     },
@@ -90,7 +87,6 @@ const targets = {
         await targets.node('src', 'server')
         await targets.node('src/capture', 'capture/capture')
         targets.package()
-        targets.tar()
     }
 }
 
