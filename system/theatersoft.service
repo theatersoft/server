@@ -4,7 +4,7 @@ Description=Theatersoft server
 [Service]
 WorkingDirectory=/opt/theatersoft/server/
 Environment=HOME=/opt/theatersoft
-ExecStart=/usr/local/bin/node src/theatersoft.js
+ExecStart=/usr/local/bin/node server.js
 
 [Install]
 WantedBy=multi-user.target
