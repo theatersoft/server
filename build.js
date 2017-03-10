@@ -3,6 +3,7 @@ require('shelljs/make')
 
 const
     pkg = require('./package.json'),
+    name = pkg.name.startsWith('@theatersoft') && pkg.name.slice(13),
     DIST = process.env.DIST === 'true',
     path = require('path'),
     fs = require('fs'),
@@ -63,23 +64,21 @@ const targets = {
     },
 
     package () {
-        const p = Object.entries(pkg).reduce((o, [k, v]) => {
-            if (!['private', 'devDependencies', 'scripts'].includes(k)) {
-                if ('distScripts' === k) k = 'scripts'
-                o[k] = v
-            }
-            return o
-        }, {})
+        const p = Object.assign({}, pkg, {
+            private: !DIST,
+            devDependencies: undefined,
+            distScripts: undefined,
+            scripts: pkg.distScripts
+        })
         fs.writeFileSync('dist/package.json', JSON.stringify(p, null, '  '), 'utf-8')
         exec('sed -i "s|dist/||g" dist/package.json ')
         exec('cp LICENSE README.md dist')
         exec('cp src/capture/start.js dist/capture')
-        //exec('cd dist/capture; ln -sf ../../src/capture/start.js')
     },
 
     tar () {
-        exec(`cd build; tar vchf ../${name} . --exclude='*/.*' --exclude='server/node_modules';`)
-        exec(`gzip ${name}`)
+        const tname = `${name}-${pkg.version}.tar`
+        exec(`cd dist; tar vchf ${tname} . --exclude='${name}-*' --exclude='client' --exclude='node_modules'; gzip -f ${tname}`)
     },
 
     publish () {
@@ -91,6 +90,7 @@ const targets = {
         await targets.node('src', 'server')
         await targets.node('src/capture', 'capture/capture')
         targets.package()
+        targets.tar()
     }
 }
 
