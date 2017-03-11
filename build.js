@@ -38,10 +38,10 @@ const
     nodeResolve = require('rollup-plugin-node-resolve')({jsnext: true})
 
 const targets = {
-    node (src, dst) {
+    async node (src, dst) {
         console.log('target node')
         exec('mkdir -p dist')
-        rollup.rollup({
+        await (await rollup.rollup({
                 entry: `${src}/index.js`,
                 external: [
                     'util',
@@ -52,15 +52,15 @@ const targets = {
                     babel,
                     nodeResolve
                 ]
-            })
-            .then(bundle => bundle.write({
+            }))
+            .write({
                 dest: `dist/${dst}.js`,
                 format: 'cjs',
                 moduleName: path.basename(dst),
                 banner: copyright,
                 sourceMap: DIST ? false : 'inline'
-            }))
-            .then(() => console.log(`wrote dist/${dst}.js`))
+            })
+        console.log(`wrote dist/${dst}.js`)
     },
 
     package () {
