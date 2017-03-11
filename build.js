@@ -74,8 +74,7 @@ const targets = {
         exec('sed -i "s|dist/||g" dist/package.json ')
         exec('cp LICENSE README.md dist')
         exec('cp src/capture/start.js dist/capture')
-        const tname = `${name}-${pkg.version}.tar`
-        exec(`cd dist; tar vchf ${tname} . --exclude='${name}-*' --exclude='client' --exclude='node_modules'; gzip -f ${tname}`)
+        exec('cd dist; npm pack')
     },
 
     publish () {
