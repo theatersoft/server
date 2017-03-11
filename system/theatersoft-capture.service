@@ -3,6 +3,7 @@ Description=Theatersoft capture server
 After=theatersoft.service
 
 [Service]
+User=theatersoft
 WorkingDirectory=/opt/theatersoft/server/
 Environment="HOME=/opt/theatersoft"
 ExecStartPre=/bin/sleep 2

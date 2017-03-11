@@ -2,6 +2,7 @@
 Description=Theatersoft server
 
 [Service]
+User=theatersoft
 WorkingDirectory=/opt/theatersoft/server/
 Environment=HOME=/opt/theatersoft
 ExecStart=/usr/local/bin/node server.js
