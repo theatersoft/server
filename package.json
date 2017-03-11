@@ -34,9 +34,9 @@
     "systemctl-restart-theatersoft": "systemctl restart theatersoft",
     "systemctl-status-theatersoft": "systemctl status theatersoft",
     "systemctl-stop-theatersoft": "systemctl stop theatersoft",
-    "systemctl-restart-theatersoft-pipeline": "systemctl restart theatersoft-pipeline",
-    "systemctl-status-theatersoft-pipeline": "systemctl status theatersoft-pipeline",
-    "systemctl-stop-theatersoft-pipeline": "systemctl stop theatersoft-pipeline"
+    "systemctl-restart-theatersoft-capture": "systemctl restart theatersoft-capture",
+    "systemctl-status-theatersoft-capture": "systemctl status theatersoft-capture",
+    "systemctl-stop-theatersoft-capture": "systemctl stop theatersoft-capture"
   },
   "devDependencies": {
     "babel-core": "^6.18.0",
