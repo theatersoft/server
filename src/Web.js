@@ -4,7 +4,7 @@ const
     fs = require('fs'),
     path = require('path'),
     DEV = process.env.NODE_ENV === 'development',
-    client = path.join(process.cwd(), 'client'),
+    client = path.join(process.cwd(), '../client'),
     root = p =>path.join(client, p)
 
 console.log('client', client)
