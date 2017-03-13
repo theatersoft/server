@@ -1,6 +1,6 @@
 {
   "name": "@theatersoft/server",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Theatersoft Server",
   "author": "Rob Huehn <rob@theatersoft.com>",
   "license": "AGPL-3.0",
@@ -19,13 +19,12 @@
     "build": "time -p node build.js && ls -l dist",
     "build:dist": "DIST=true npm run build",
     "debug-build": "node --inspect=9966 --debug-brk build",
-    "link": "npm link @theatersoft/bus @theatersoft/device",
+    "link": "(cd dist; npm link); npm link @theatersoft/bus @theatersoft/device",
     "remotedev": "remotedev --hostname=0.0.0.0 --port=6400"
   },
   "distScripts": {
     "BUS": "BUS=`cat ~/.config/theatersoft/.bus` AUTH=`cat ~/.config/theatersoft/.auth`",
-    "link": "npm link; npm link @theatersoft/server @theatersoft/bus @theatersoft/device @theatersoft/serial @theatersoft/x10 @theatersoft/zwave",
-    "link-client": "npm link @theatersoft/client; ln -sf node_modules/@theatersoft/client",
+    "link": "npm link; npm link @theatersoft/client @theatersoft/bus @theatersoft/device @theatersoft/serial @theatersoft/x10 @theatersoft/zwave",
     "start": "PORT=5453 npm run BUS -- node server.js",
     "start-dev": "PORT=5453 NODE_ENV=development node server.js",
     "start-capture": "npm run BUS -- node capture/start.js",
@@ -57,8 +56,9 @@
     "rollup-plugin-sourcemaps": "^0.4.1",
     "shelljs": "^0.7.0"
   },
-  "dependencies": {
+  "distDependencies": {
     "@theatersoft/bus": "~1",
+    "@theatersoft/client": "~1",
     "express": "3.x",
     "nedb": "~0.10.5",
     "request": "~2.65.0"

@@ -46,7 +46,7 @@ const targets = {
                 external: [
                     'util',
                     'fs',
-                    ...Object.keys(pkg.dependencies)
+                    ...Object.keys(pkg.distDependencies)
                 ],
                 plugins: [
                     babel,
@@ -66,15 +66,15 @@ const targets = {
     package () {
         const p = Object.assign({}, pkg, {
             private: !DIST,
+            dependencies: pkg.distDependencies,
+            distDependencies: undefined,
             devDependencies: undefined,
-            distScripts: undefined,
-            scripts: pkg.distScripts
+            scripts: pkg.distScripts,
+            distScripts: undefined
         })
         fs.writeFileSync('dist/package.json', JSON.stringify(p, null, '  '), 'utf-8')
-        exec('sed -i "s|dist/||g" dist/package.json ')
-        exec('cp LICENSE README.md dist')
+        exec('cp LICENSE README.md .npmignore dist')
         exec('cp src/capture/start.js dist/capture')
-        exec('cd dist; npm pack')
     },
 
     publish () {
