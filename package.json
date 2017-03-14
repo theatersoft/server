@@ -25,7 +25,7 @@
   },
   "distScripts": {
     "BUS": "env $(cat ${XDG_CONFIG_HOME:=~/.config}/theatersoft/.bus | xargs)",
-    "link": "npm link; npm link @theatersoft/client @theatersoft/bus @theatersoft/device @theatersoft/serial @theatersoft/x10 @theatersoft/zwave",
+    "link": "npm link; npm link @theatersoft/server @theatersoft/client @theatersoft/bus @theatersoft/device @theatersoft/serial @theatersoft/x10 @theatersoft/zwave",
     "start": "PORT=443 authbind node server.js",
     "start-child": "npm run BUS -- node server.js",
     "start-dev": "PORT=5453 NODE_ENV=development node server.js",
