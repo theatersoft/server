@@ -1,10 +1,11 @@
-import {bus, executor, proxy} from '@theatersoft/bus'
-import log from './Log'
+import {bus, executor, proxy, log} from '@theatersoft/bus'
+
+export const THEATERSOFT_CONFIG_HOME = `${process.env.XDG_CONFIG_HOME || `${process.env.HOME}/.config`}/theatersoft`
 
 const
     fs = require('fs'),
     os = require('os'),
-    read = () => JSON.parse(fs.readFileSync(`${process.env.HOME}/.config/theatersoft/config.json`, 'utf8')),
+    read = () => JSON.parse(fs.readFileSync(`${THEATERSOFT_CONFIG_HOME}/config.json`, 'utf8')),
     loaded = executor(),
     cameras = {},
     hosts = {},
@@ -17,7 +18,7 @@ bus.started()
         (bus.root ? Promise.resolve(read()) : proxy('Config').get())
             .then(config_ => {
                 config = config_
-                console.log('Config', hostname, config)
+                log('Config', hostname, config)
 
                 // hosts map
                 config.hosts.forEach(h => {
@@ -42,12 +43,12 @@ bus.started()
 
 const Config = new class {
     get () {
-        log.log('bus Config.get')
+        log('bus Config.get')
         return config
     }
 
     getHost () {
-        log.log('bus Config.getHost')
+        log('bus Config.getHost')
         return host
     }
 }

@@ -1,13 +1,13 @@
 import {bus, executor, log, error, setTag} from '@theatersoft/bus'
 import Session from './Session'
-import Config from './Config'
+import Config, {THEATERSOFT_CONFIG_HOME} from './Config'
 import web from './Web'
 import rpc from './Rpc'
 import imageProxy from './ImageProxy'
 
 const
     fs = require('fs'),
-    read = n => {try {return fs.readFileSync(`${process.env.HOME}/.config/theatersoft/${n}`, 'utf8').trim()} catch (e) {}},
+    read = n => {try {return fs.readFileSync(`${THEATERSOFT_CONFIG_HOME}/${n}`, 'utf8').trim()} catch (e) {}},
     port = process.env.PORT,
     auth = process.env.AUTH,
     url = process.env.BUS,

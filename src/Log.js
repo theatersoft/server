@@ -1,37 +1,32 @@
-var
-    Nedb = require('nedb'),
-    home = process.env.HOME + '/.config/theatersoft/',
-    filename = function() {return home + 'log.db'},
-    db,
-    hostname = require('os').hostname(),
-    add = function (o) {
+import Nedb from 'nedb'
+import {THEATERSOFT_CONFIG_HOME} from './Config'
+
+const
+    host = require('os').hostname(),
+    filename = `${THEATERSOFT_CONFIG_HOME}/log.db`,
+    db = new Nedb({filename, autoload: true}),
+    add = o => {
         console.log('db.insert',o)
         db.insert(o)
         db.count({},function(e,d){console.log('db.count',d)})
     }
 
-db = new Nedb({filename: filename(), autoload: true})
+console.log('nedb', filename)
 
 export default {
     rpc: {
-        find: function (args) {
-            return new Promise(function(resolve, reject) {
-                db.find(args[0], function (err, docs) {
-                    if (err)
-                        reject(err)
-                    else
-                        resolve(docs)
-                })
-            })
+        find (args) {
+            return new Promise((resolve, reject) =>
+                db.find(args[0], (err, docs) => err ? reject(err) : resolve(docs)))
         }
     },
-    log: function () { // console.log replacement
+    log () { // console.log replacement
         add({
             time: Date.now(),
-            host: hostname,
+            host,
             source: 'log',
             arguments: JSON.stringify(Array.prototype.slice.call(arguments, 0))
         })
     },
-    db: db
+    db
 }

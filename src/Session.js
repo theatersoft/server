@@ -1,21 +1,17 @@
 import log from './Log'
-import config from './Config'
+import Config, {THEATERSOFT_CONFIG_HOME} from './Config'
 
 const
     Nedb = require('nedb'),
-    db = new Nedb({filename: `${process.env.HOME}/.config/theatersoft/session.db`, autoload: true}),
+    db = new Nedb({filename: `${THEATERSOFT_CONFIG_HOME}/session.db`, autoload: true}),
     cache = {},
     add = o => {
-        console.log('db.insert', o)
+        log('db.insert', o)
         db.insert(o)
         db.count({}, (e, d) => {console.log('db.count', d)})
     },
-    find = q => new Promise((resolve, reject) => {
-        db.find(q, (err, docs) => {
-            if (err) reject(err)
-            else resolve(docs.length > 0)
-        })
-    }),
+    find = q => new Promise((resolve, reject) =>
+        db.find(q, (err, docs) => err ? reject(err) : resolve(docs.length > 0))),
     uuid = () =>
         "00000000-0000-4000-8000-000000000000".replace(/0/g, () => (0 | Math.random() * 16).toString(16)),
     createSession = req => {
@@ -32,7 +28,7 @@ const
 
 export default {
     checkSession (req) {
-        if (!config.host.root)
+        if (!Config.host.root)
             return Promise.resolve(true)
 
         const id = req.headers.cookie && req.headers.cookie.slice(0, 4) === 'sid=' && req.headers.cookie.slice(4),
@@ -52,7 +48,7 @@ export default {
 
     rpc: {
         Login (args, res, req) {
-            if (args.length == 1 && args[0] === config.config.password) {
+            if (args.length == 1 && args[0] === Config.config.password) {
                 const sid = createSession(req)
                 console.log(sid)
                 res.cookie('sid', sid, {
