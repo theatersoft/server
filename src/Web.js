@@ -1,13 +1,14 @@
 import session from './Session'
+import {log} from '@theatersoft/bus'
 
 const
     fs = require('fs'),
     path = require('path'),
-    DEV = process.env.NODE_ENV === 'development',
-    client = path.join(process.cwd(), '../client'),
-    root = p =>path.join(client, p)
+    client = path.dirname(require.resolve('@theatersoft/client')),
+    root = p =>path.join(client, p),
+    DEV = process.env.NODE_ENV === 'development'
 
-console.log('client', client)
+log('client', client)
 
 export default function web (express, app) {
     if (!DEV) {
@@ -19,7 +20,7 @@ export default function web (express, app) {
         })
     }
     app.get('/', (req, res) => {
-        console.log('get /')
+        log('get /')
         res.sendfile(root('index.html'))
     })
     app.use('/', express.static(root('')))
