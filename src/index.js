@@ -1,4 +1,4 @@
-import {bus, executor, log, setTag} from '@theatersoft/bus'
+import {bus, executor, log, error, setTag} from '@theatersoft/bus'
 import Session from './Session'
 import Config from './Config'
 import web from './Web'
@@ -21,7 +21,7 @@ log({parent, children})
 
 bus.start({parent, children})
     .then(bus => {
-        console.log(`bus name is ${bus.name}`)
+        log(`bus name is ${bus.name}`)
     })
 
 if (!port) log('missing PORT (server not started)')
@@ -54,7 +54,7 @@ port && Config.loaded
             key: read('server.key'), cert: read('server.cer')
         }, app).listen(port))
 
-        console.log('Listening on port ' + port)
+        log('Listening on port ' + port)
     })
 
 Config.loaded
@@ -62,13 +62,13 @@ Config.loaded
         const {host: {services = []}, config: {configs = {}}} = Config
         services.forEach(options => {
             if (options.enabled !== false) {
-                console.log(`starting service ${options.name}`)
+                log(`starting service ${options.name}`)
                 Object.assign(options.config, configs[options.name])
                 const service = require(options.module)[options.export]
                 new service().start(options)
                     .then(
-                        () => console.log(`started service ${options.name}`),
-                        err => console.log(`failed to start service ${options.name} ${err}`)
+                        () => log(`started service ${options.name}`),
+                        err => error(`failed to start service ${options.name} ${err}`)
                     )
             }
         })
