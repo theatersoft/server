@@ -26,7 +26,7 @@
   "distScripts": {
     "BUS": "BUS=`cat ~/.config/theatersoft/.bus` AUTH=`cat ~/.config/theatersoft/.auth`",
     "link": "npm link; npm link @theatersoft/client @theatersoft/bus @theatersoft/device @theatersoft/serial @theatersoft/x10 @theatersoft/zwave",
-    "start": "PORT=443 node server.js",
+    "start": "PORT=443 authbind node server.js",
     "start-child": "npm run BUS -- node server.js",
     "start-dev": "PORT=5453 NODE_ENV=development node server.js",
     "start-dev-child": "PORT=5453 NODE_ENV=development npm run BUS -- node server.js",
