@@ -68,6 +68,8 @@ const targets = {
             private: !DIST,
             dependencies: pkg.distDependencies,
             distDependencies: undefined,
+            peerDependencies: pkg.distPeerDependencies,
+            distPeerDependencies: undefined,
             devDependencies: undefined,
             scripts: pkg.distScripts,
             distScripts: undefined

@@ -61,9 +61,11 @@
   },
   "distDependencies": {
     "@theatersoft/bus": "~1",
-    "@theatersoft/client": "~1",
     "express": "3.x",
     "nedb": "~0.10.5",
     "request": "~2.65.0"
+  },
+  "distPeerDependencies": {
+    "@theatersoft/client": "~1"
   }
 }
