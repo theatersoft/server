@@ -1,8 +1,7 @@
+import {error} from '@theatersoft/bus'
 import config from './Config'
 import session from './Session'
-
-const
-    request = require('request')
+import request from 'request'
 //        http = require('http'),
 
 export default {
@@ -19,15 +18,9 @@ export default {
 
             session.checkSession(req)
                 .then(found => {
-                    if (!found)
-                        return res.send(401)
-                    request({
-                        url,
-                        method: "GET"
-                    })
-                        .on('error', e => {
-                            console.log('imageProxy pipe error', cam, e)
-                        })
+                    if (!found) return res.send(401)
+                    request({url, method: "GET"})
+                        .on('error', e => error('imageProxy pipe error', cam, e))
                         .pipe(res)
                 })
         }

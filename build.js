@@ -46,6 +46,7 @@ const targets = {
                 external: [
                     'util',
                     'fs',
+                    'path',
                     ...Object.keys(pkg.distDependencies)
                 ],
                 plugins: [

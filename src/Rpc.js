@@ -1,16 +1,14 @@
+import {log} from '@theatersoft/bus'
 import config from './Config'
-import log from './Log'
 import session from './Session'
-import Log from './Log'
 
 const
     https = require('https'),
     targets = Object.assign({
             Session: session.rpc,
-            Log: log.rpc,
             Rpc: {
                 get () {
-                    console.log('Rpc.get')
+                    log('Rpc.get')
                     return targets
                 }
             }
@@ -58,7 +56,7 @@ const
         })
     },
     request = (host, target, method, args) => {
-        console.log('request', host, target, method)
+        log('request', host, target, method)
         return new Promise((resolve, reject) => {
             let
                 data = JSON.stringify({method: target + '.' + method, args}),
@@ -76,9 +74,9 @@ const
                 }, res => {
                     let result = ''
                     res.setEncoding('utf8')
-//                    console.log('Rpc.request', res)
+//                    log('Rpc.request', res)
                     res.on('data', data => {
-                        console.log('Rpc.request on ', data)
+                        log('Rpc.request on ', data)
                         result += data
                     })
                     res.on('end', () => {
@@ -89,7 +87,7 @@ const
                     })
                 })
             req.on('error', e => {
-                console.log(e)
+                log(e)
                 reject(e)
             })
             req.write(data)

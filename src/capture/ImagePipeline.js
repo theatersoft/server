@@ -1,5 +1,6 @@
 //gst-launch v4l2src device=/dev/video0 norm=NTSC ! videorate ! video/x-raw-yuv,framerate=4/1 ! jpegenc ! multipartmux ! tcpserversink port=5400
 //gst-launch tcpclientsrc port=5400 ! multipartdemux ! jpegdec ! xvimagesink
+import {log, error} from '@theatersoft/bus'
 
 var
     express = require('express'),
@@ -32,11 +33,11 @@ function Pipeline (device) {
         var env = process.env
 //        if (device == '3')
 //            env.GST_DEBUG = 3
-        console.log('pipeline:', pipeline)
+        log('pipeline:', pipeline)
 
         gst = child.spawn('gst-launch-1.0', pipeline.split(' '), {stdio: 'inherit', env: env})
         gst.on('exit', function (code) {
-            console.log('pipeline exit ' + code)
+            log('pipeline exit ' + code)
         })
 
         // how to wait for child init complete?
@@ -46,7 +47,7 @@ function Pipeline (device) {
     // connect tcpclient to receive jpeg stream
     var connectTcp = function () {
         client = net.connect(tcpPort, function () {
-            console.log('client connect')
+            log('client connect')
         })
         client.on('data', function (data) {
             var length = data.length, head, lines
@@ -96,12 +97,12 @@ function Pipeline (device) {
             } while (length)
         })
         client.on('error', function (error) {
-            console.log('client error ' + error)
+            error('client error ' + error)
             if (client)
                 setTimeout(connectTcp, 500)
         })
         client.on('close', function (had_error) {
-            console.log('client close')
+            log('client close')
         })
     }
 
@@ -112,12 +113,12 @@ function Pipeline (device) {
             res.send(jpeg)
         })
         server = http.createServer(app).listen(port)
-        console.log('Listening on port ' + port)
+        log('Listening on port ' + port)
     }
 
     // public destroy
     this.destroy = function () {
-        console.log('Pipeline destroy')
+        log('Pipeline destroy')
         if (server)
             server.close()
         if (client) {

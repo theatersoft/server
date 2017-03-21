@@ -21,10 +21,10 @@ log({parent, children})
 
 bus.start({parent, children})
     .then(bus => {
-        log(`bus name is ${bus.name}`)
+        log(`Bus name is ${bus.name}`)
     })
 
-if (!port) log('missing PORT (server not started)')
+if (!port) log('Missing PORT (server not started)')
 port && Config.loaded
     .then(() => {
         const
@@ -62,13 +62,13 @@ Config.loaded
         const {host: {services = []}, config: {configs = {}}} = Config
         services.forEach(options => {
             if (options.enabled !== false) {
-                log(`starting service ${options.name}`)
+                log(`Starting service ${options.name}`)
                 Object.assign(options.config, configs[options.name])
                 const service = require(options.module)[options.export]
                 new service().start(options)
                     .then(
-                        () => log(`started service ${options.name}`),
-                        err => error(`failed to start service ${options.name} ${err}`)
+                        () => log(`Started service ${options.name}`),
+                        err => error(`Failed to start service ${options.name} ${err}`)
                     )
             }
         })

@@ -1,3 +1,4 @@
+import {log} from '@theatersoft/bus'
 var
     config = require('./Config'),
     spawn = require('child_process').spawn,
@@ -8,22 +9,22 @@ var
             started
         return {
             start: function () {
-                console.log('start child', name)
+                log('start child', name)
                 started = true
                 var env = process.env
                 child = spawn(cmd.command, cmd.args || [], {stdio: 'inherit', env: env})
                 child.on('error', function (err) {
-                    console.log(name, 'child err', err)
+                    log(name, 'child err', err)
                     started = false
                 })
                 child.on('close', function (code, signal) {
-                    console.log(name, 'child closed', code, signal)
+                    log(name, 'child closed', code, signal)
                     started = false
                 })
             },
             stop: function () {
                 if (child) {
-                    console.log('stop child', name)
+                    log('stop child', name)
                     child.kill('SIGTERM')
                 }
             },
