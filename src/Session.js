@@ -1,4 +1,4 @@
-import {bus, log, error} from '@theatersoft/bus'
+import {bus, proxy, log, error} from '@theatersoft/bus'
 import Config, {THEATERSOFT_CONFIG_HOME} from './Config'
 
 const
@@ -26,6 +26,12 @@ const
         return id
     }
 
+let manager
+function check (auth) {
+    if (!manager) manager = bus.proxy('/Bus')
+    return manager.check(auth)
+}
+
 export default {
     checkSession (req) {
         if (!Config.host.root)
@@ -41,10 +47,10 @@ export default {
     },
 
     check (id) {
-        //log('bus.root', bus.root)
-        return !id ? Promise.resolve(false) :
-            id && cache[id] ? Promise.resolve(true) :
-                find({id})
+        return !bus.root ? check(id) :
+            !id ? Promise.resolve(false) :
+                cache[id] ? Promise.resolve(true) :
+                    find({id})
     },
 
     rpc: {

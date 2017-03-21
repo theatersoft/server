@@ -1,6 +1,6 @@
 {
   "name": "@theatersoft/server",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Theatersoft Server",
   "author": "Rob Huehn <rob@theatersoft.com>",
   "license": "AGPL-3.0",
@@ -31,8 +31,8 @@
     "start-dev": "PORT=5453 NODE_ENV=development node server.js",
     "start-dev-child": "PORT=5453 NODE_ENV=development npm run BUS -- node server.js",
     "start-capture": "npm run BUS -- node capture/start.js",
-    "debug-dev-server": "PORT=5453 NODE_ENV=development node --inspect-brk=9961 server.js",
-    "debug-dev-server-child": "PORT=5453 NODE_ENV=development npm run BUS -- node --inspect-brk=9961 server.js",
+    "debug-dev": "PORT=5453 NODE_ENV=development node --inspect-brk=9961 server.js",
+    "debug-dev-child": "PORT=5453 NODE_ENV=development npm run BUS -- node --inspect-brk=9961 server.js",
     "systemctl-restart-theatersoft": "systemctl restart theatersoft",
     "systemctl-status-theatersoft": "systemctl status theatersoft",
     "systemctl-stop-theatersoft": "systemctl stop theatersoft",
