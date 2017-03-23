@@ -1,7 +1,7 @@
 import {log} from '@theatersoft/bus'
 import fs from 'fs'
 import path from 'path'
-import session from './session'
+import {checkSession} from './session'
 
 export default function web (express, app) {
     const
@@ -11,7 +11,7 @@ export default function web (express, app) {
     log('Client', client)
     if (!DEV) {
         app.all(/dev/, (req, res, next) => {
-            session.checkSession(req).then(found => {
+            checkSession(req).then(found => {
                 if (!found) return res.send(401)
                 next()
             })

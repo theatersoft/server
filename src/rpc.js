@@ -1,11 +1,11 @@
 import {log} from '@theatersoft/bus'
 import config from './config'
-import session from './session'
+import {checkSession, rpc as sessionRpc} from './session'
 
 const
     https = require('https'),
     targets = Object.assign({
-            Session: session.rpc,
+            Session: sessionRpc,
             Rpc: {
                 get () {
                     log('Rpc.get')
@@ -31,9 +31,9 @@ const
 //        log(req.headers.cookie, target, method, args)
 
         if (target === 'Session' && method === 'Login')
-            return res.send({result: session.rpc.Login(args, res, req)})
+            return res.send({result: sessionRpc.Login(args, res, req)})
 
-        session.checkSession(req).then(found => {
+        checkSession(req).then(found => {
             if (!found)
                 return res.send(401)
 

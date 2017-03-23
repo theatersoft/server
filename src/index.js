@@ -1,5 +1,5 @@
 import {bus, executor, log, error, setTag} from '@theatersoft/bus'
-import session from './session'
+import {check} from './session'
 import Config, {THEATERSOFT_CONFIG_HOME} from './config'
 import web from './web'
 import rpc from './rpc'
@@ -12,7 +12,6 @@ const
     auth = process.env.AUTH,
     url = process.env.BUS,
     parent = url && {url, auth},
-    {check} = session,
     server = executor(),
     children = port && {server: server.promise, check}
 

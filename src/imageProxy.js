@@ -1,6 +1,6 @@
 import {error} from '@theatersoft/bus'
 import config from './config'
-import session from './session'
+import {checkSession} from './session'
 import request from 'request'
 //        http = require('http'),
 
@@ -16,7 +16,7 @@ export default {
 //                    console.log('imageProxy error', cam, e)
 //                })
 
-            session.checkSession(req)
+            checkSession(req)
                 .then(found => {
                     if (!found) return res.send(401)
                     request({url, method: "GET"})
