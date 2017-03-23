@@ -15,60 +15,64 @@ const
     server = executor(),
     children = port && {server: server.promise, check}
 
-setTag('Theatersoft')
-log({parent, children})
+export function start () {
+    setTag('Theatersoft')
+    log({parent, children})
 
-bus.start({parent, children})
-    .then(bus => {
-        log(`Bus name is ${bus.name}`)
-    })
-
-if (!port) log('Missing PORT (server not started)')
-port && Config.loaded
-    .then(() => {
-        const
-            https = require('https'),
-            express = require('express'),
-            app = express()
-
-        web(express, app)
-        app.use((req, res, next) => {
-            res.setHeader('Access-Control-Allow-Origin', req.get('origin') || '*')
-            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-            res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, Accept-Language, Accept-Encoding');
-            res.setHeader('Access-Control-Allow-Credentials', true);
-            if ('OPTIONS' == req.method) res.send(200)
-            else next()
+    bus.start({parent, children})
+        .then(bus => {
+            log(`Bus name is ${bus.name}`)
         })
-        app.set('json replacer', (key, value) => typeof value === 'function' ? '()' : value)
-        app.use(express.cookieParser())
-        app.get('/theatersoft/rpc', rpc.get)
-        app.post('/theatersoft/rpc', (req, res, next) => {
-            req.headers['content-type'] = 'application/json';
-            next()
-        }, express.json(), rpc.post)
-        app.get('/theatersoft/image/:name', imageProxy.get)
 
-        server.resolve(https.createServer({
-            key: read('server.key'), cert: read('server.cer')
-        }, app).listen(port))
+    if (!port) log('Missing PORT (server not started)')
+    port && Config.loaded
+        .then(() => {
+            const
+                https = require('https'),
+                express = require('express'),
+                app = express()
 
-        log('Listening on port ' + port)
-    })
+            web(express, app)
+            app.use((req, res, next) => {
+                res.setHeader('Access-Control-Allow-Origin', req.get('origin') || '*')
+                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+                res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, Accept-Language, Accept-Encoding');
+                res.setHeader('Access-Control-Allow-Credentials', true);
+                if ('OPTIONS' == req.method) res.send(200)
+                else next()
+            })
+            app.set('json replacer', (key, value) => typeof value === 'function' ? '()' : value)
+            app.use(express.cookieParser())
+            app.get('/theatersoft/rpc', rpc.get)
+            app.post('/theatersoft/rpc', (req, res, next) => {
+                req.headers['content-type'] = 'application/json';
+                next()
+            }, express.json(), rpc.post)
+            app.get('/theatersoft/image/:name', imageProxy.get)
 
-Config.loaded
-    .then(() => {
-        const {host: {services = []}, config: {configs = {}}} = Config
-        services.forEach(options => {
-            if (options.enabled !== false) {
-                log(`Starting service ${options.name}`)
-                Object.assign(options.config, configs[options.name])
-                const service = require(options.module)[options.export]
-                new service().start(options)
-                    .then(
-                        () => log(`Started service ${options.name}`),
-                        err => error(`Failed to start service ${options.name} ${err}`)
-                    )
-            }
+            server.resolve(https.createServer({
+                key: read('server.key'), cert: read('server.cer')
+            }, app).listen(port))
+
+            log('Listening on port ' + port)
         })
-    })
+
+    Config.loaded
+        .then(() => {
+            const {host: {services = []}, config: {configs = {}}} = Config
+            services.forEach(options => {
+                if (options.enabled !== false) {
+                    log(`Starting service ${options.name}`)
+                    Object.assign(options.config, configs[options.name])
+                    const service = require(options.module)[options.export]
+                    new service().start(options)
+                        .then(
+                            () => log(`Started service ${options.name}`),
+                            err => error(`Failed to start service ${options.name} ${err}`)
+                        )
+                }
+            })
+        })
+}
+
+export {createSession} from './session'

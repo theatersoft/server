@@ -74,7 +74,7 @@ const targets = {
             distScripts: undefined
         })
         fs.writeFileSync('dist/package.json', JSON.stringify(p, null, '  '), 'utf-8')
-        exec('cp LICENSE README.md .npmignore dist')
+        exec('cp LICENSE README.md .npmignore src/server.js dist')
         exec('cp src/capture/start.js dist/capture')
     },
 
@@ -84,7 +84,7 @@ const targets = {
     },
 
     async all () {
-        await targets.node('src', 'server')
+        await targets.node('src', 'index')
         await targets.node('src/capture', 'capture/capture')
         targets.package()
     }
