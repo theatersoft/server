@@ -1,7 +1,7 @@
 import {log} from '@theatersoft/bus'
 import fs from 'fs'
 import path from 'path'
-import session from './Session'
+import session from './session'
 
 export default function web (express, app) {
     const

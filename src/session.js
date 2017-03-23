@@ -1,5 +1,5 @@
 import {bus, proxy, log, error} from '@theatersoft/bus'
-import Config, {THEATERSOFT_CONFIG_HOME} from './Config'
+import Config, {THEATERSOFT_CONFIG_HOME} from './config'
 
 const
     Nedb = require('nedb'),

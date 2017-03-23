@@ -1,4 +1,4 @@
-import imagePipeline from './ImagePipeline'
+import imagePipeline from './imagePipeline'
 import {proxy} from '@theatersoft/bus'
 
 const pipelines = []

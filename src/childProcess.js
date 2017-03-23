@@ -1,6 +1,6 @@
 import {log} from '@theatersoft/bus'
 var
-    config = require('./Config'),
+    config = require('./config'),
     spawn = require('child_process').spawn,
     cmds = {},
     makeCommand = function (name, cmd) {

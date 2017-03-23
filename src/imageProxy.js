@@ -1,6 +1,6 @@
 import {error} from '@theatersoft/bus'
-import config from './Config'
-import session from './Session'
+import config from './config'
+import session from './session'
 import request from 'request'
 //        http = require('http'),
 

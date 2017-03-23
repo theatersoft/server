@@ -1,9 +1,9 @@
 import {bus, executor, log, error, setTag} from '@theatersoft/bus'
-import Session from './Session'
-import Config, {THEATERSOFT_CONFIG_HOME} from './Config'
-import web from './Web'
-import rpc from './Rpc'
-import imageProxy from './ImageProxy'
+import session from './session'
+import Config, {THEATERSOFT_CONFIG_HOME} from './config'
+import web from './web'
+import rpc from './rpc'
+import imageProxy from './imageProxy'
 
 const
     fs = require('fs'),
@@ -12,7 +12,7 @@ const
     auth = process.env.AUTH,
     url = process.env.BUS,
     parent = url && {url, auth},
-    {check} = Session,
+    {check} = session,
     server = executor(),
     children = port && {server: server.promise, check}
 

@@ -1,6 +1,6 @@
 import {log} from '@theatersoft/bus'
-import config from './Config'
-import session from './Session'
+import config from './config'
+import session from './session'
 
 const
     https = require('https'),

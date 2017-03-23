@@ -67,11 +67,4 @@ export default {
     get hosts () {return hosts},
 
     get cameras () {return cameras},
-
-    rpc: {
-        Get () {
-            console.error('deprecated Config.get')
-            return config
-        }
-    }
 }
