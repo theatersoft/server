@@ -44,9 +44,7 @@ const targets = {
         await (await rollup.rollup({
                 entry: `${src}/index.js`,
                 external: [
-                    'util',
-                    'fs',
-                    'path',
+                    'util', 'fs', 'path', 'http', 'net', 'child_process',
                     ...Object.keys(pkg.distDependencies)
                 ],
                 plugins: [

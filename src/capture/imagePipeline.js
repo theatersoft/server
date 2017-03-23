@@ -1,19 +1,16 @@
 //gst-launch v4l2src device=/dev/video0 norm=NTSC ! videorate ! video/x-raw-yuv,framerate=4/1 ! jpegenc ! multipartmux ! tcpserversink port=5400
 //gst-launch tcpclientsrc port=5400 ! multipartdemux ! jpegdec ! xvimagesink
 import {log, error} from '@theatersoft/bus'
-
-var
-    express = require('express'),
-    http = require('http'),
-    net = require('net'),
-    child = require('child_process')
+import express from 'express'
+import http from 'http'
+import net from 'net'
+import child from 'child_process'
 
 function Pipeline (device) {
     var
         app = express(),
         port = 5400 + Number(device),
         tcpPort = port - 100,
-        gst,
         client,
         server,
         remaining, // if nonzero, length remaining of incompete buffer
@@ -21,36 +18,24 @@ function Pipeline (device) {
         jpeg = null // current complete buffer
 
     // spawn gstreamer pipeline to send jpeg stream
-    var spawnPipeline = function (cb) {
-        var pipeline = 'v4l2src device=/dev/cctv'
-            + device
-            + ' norm=NTSC !'
-            + ' video/x-raw,format=YUY2,width=640,height=480,framerate=30000/1001 !'
-            + ' deinterlace method=2 !'
-            + ' videorate ! video/x-raw,framerate=4/1 ! jpegenc ! multipartmux ! tcpserversink port='
-            + tcpPort
-
-        var env = process.env
+    const spawnPipeline = cb => {
+        const pipeline = `v4l2src device=/dev/cctv${device} norm=NTSC ! video/x-raw,format=YUY2,width=640,height=480,framerate=30000/1001 ! deinterlace method=2 ! videorate ! video/x-raw,framerate=4/1 ! jpegenc ! multipartmux ! tcpserversink port=${tcpPort}`
+        let env = process.env
 //        if (device == '3')
 //            env.GST_DEBUG = 3
         log('pipeline:', pipeline)
-
-        gst = child.spawn('gst-launch-1.0', pipeline.split(' '), {stdio: 'inherit', env: env})
-        gst.on('exit', function (code) {
-            log('pipeline exit ' + code)
-        })
+        const gst = child.spawn('gst-launch-1.0', pipeline.split(' '), {stdio: 'inherit', env})
+        gst.on('exit', code => log('pipeline exit ' + code))
 
         // how to wait for child init complete?
         setTimeout(cb, 1000)
     }
 
     // connect tcpclient to receive jpeg stream
-    var connectTcp = function () {
-        client = net.connect(tcpPort, function () {
-            log('client connect')
-        })
-        client.on('data', function (data) {
-            var length = data.length, head, lines
+    const connectTcp = () => {
+        client = net.connect(tcpPort, () => log('client connect'))
+        client.on('data', data => {
+            let length = data.length, head, lines
             do {
                 if (remaining) {
                     if (length <= remaining) {
@@ -96,19 +81,19 @@ function Pipeline (device) {
                 }
             } while (length)
         })
-        client.on('error', function (error) {
+        client.on('error', error => {
             error('client error ' + error)
             if (client)
                 setTimeout(connectTcp, 500)
         })
-        client.on('close', function (had_error) {
+        client.on('close', ()  => {
             log('client close')
         })
     }
 
     // create http server to return jpeg
-    var createHttp = function () {
-        app.get('/', function (req, res) {
+    const createHttp = () => {
+        app.get('/', (req, res) => {
             res.type('image/jpeg')
             res.send(jpeg)
         })
@@ -117,7 +102,7 @@ function Pipeline (device) {
     }
 
     // public destroy
-    this.destroy = function () {
+    this.destroy = () => {
         log('Pipeline destroy')
         if (server)
             server.close()
@@ -132,7 +117,7 @@ function Pipeline (device) {
     // public port
     this.port = port
 
-    spawnPipeline(function () {
+    spawnPipeline(() => {
         connectTcp()
         createHttp()
     })
