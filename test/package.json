@@ -3,20 +3,22 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "_debug": "npm run _test -- --inspect --debug-brk",
-    "_test": "BUS=`[ -f .bus ] && cat .bus` AUTH=`[ -f .auth ] && cat .auth` node",
-    "auth": "npm run _test -- auth.js",
+    "DEBUG": "npm run TEST -- --inspect-brk",
+    "TEST": "env $(cat .bus | xargs) node",
+    "auth": "npm run TEST -- auth.js",
     "clear-cookies": "echo '{}' >.cookies.json",
-    "config": "npm run _test -- config.js",
-    "login": "npm run _test -- login.js",
-    "debug-auth": "npm run _debug -- auth.js",
-    "debug-config": "npm run _debug -- config.js",
-    "debug-login": "npm run _debug -- login.js"
+    "config": "npm run TEST -- config.js",
+    "login": "npm run TEST -- login.js",
+    "debug-auth": "npm run DEBUG -- auth.js",
+    "debug-config": "npm run DEBUG -- config.js",
+    "debug-login": "npm run DEBUG -- login.js"
   },
   "author": "Rob Huehn <rob@theatersoft.com>",
   "private": true,
   "license": "AGPL-3.0",
-  "dependencies": {},
+  "dependencies": {
+    "request": "~2.65.0"
+  },
   "devDependencies": {
     "tough-cookie-filestore": "0.0.1"
   }

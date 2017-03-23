@@ -1,5 +1,5 @@
 'use strict'
-require('./rpc').rpc('Session.Login', ['0654'])
+require('./rpc').rpc('Session.Login', ['0000'])
     .then(r => {
         console.log('Session.Login returned', r)
     }, e => {
