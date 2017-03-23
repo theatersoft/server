@@ -13,18 +13,7 @@ const
     find = q => new Promise((resolve, reject) =>
         db.find(q, (err, docs) => err ? reject(err) : resolve(docs.length > 0))),
     uuid = () =>
-        "00000000-0000-4000-8000-000000000000".replace(/0/g, () => (0 | Math.random() * 16).toString(16)),
-    createSession = req => {
-        var id = uuid()//.substr(0, 8)
-        cache[id] = true
-        add({
-            id: id,
-            time: Date.now(),
-            ip: req.ip,
-            ua: req.headers['user-agent']
-        })
-        return id
-    }
+        "00000000-0000-4000-8000-000000000000".replace(/0/g, () => (0 | Math.random() * 16).toString(16))
 
 let manager
 function check (auth) {
@@ -33,19 +22,6 @@ function check (auth) {
 }
 
 export default {
-    checkSession (req) {
-        if (!Config.host.root)
-            return Promise.resolve(true)
-
-        const id = req.headers.cookie && req.headers.cookie.slice(0, 4) === 'sid=' && req.headers.cookie.slice(4),
-            report = b => {
-                if (!b)
-                    error('failed session check', req.ip, req.headers['user-agent'])
-                return b
-            }
-        return this.check(id).then(res => report(res))
-    },
-
     check (id) {
         return !bus.root ? check(id) :
             !id ? Promise.resolve(false) :
@@ -53,10 +29,24 @@ export default {
                     find({id})
     },
 
+    checkSession (req) {
+        if (!Config.host.root)
+            return Promise.resolve(true)
+        return this.check(req.headers.cookie && req.headers.cookie.slice(0, 4) === 'sid=' && req.headers.cookie.slice(4))
+            .then(res => (!res && error('failed session check', req.ip, req.headers['user-agent']), res))
+    },
+
+    createSession (name, ip, ua) {
+        const id = uuid()
+        cache[id] = true
+        add({name, id, ip, ua, time: Date.now()})
+        return id
+    },
+
     rpc: {
         Login (args, res, req) {
             if (args.length == 1 && args[0] === Config.config.password) {
-                const sid = createSession(req)
+                const sid = createSession(undefined, req.ip, req.headers['user-agent'])
                 //log(sid)
                 res.cookie('sid', sid, {
                     // avoid duplicate cookie browser issues; don't specify an explicit domain
