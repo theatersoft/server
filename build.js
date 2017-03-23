@@ -74,7 +74,7 @@ const targets = {
             distScripts: undefined
         })
         fs.writeFileSync('dist/package.json', JSON.stringify(p, null, '  '), 'utf-8')
-        exec('cp LICENSE COPYRIGHT README.md .npmignore dist')
+        exec('cp LICENSE README.md .npmignore dist')
         exec('cp src/capture/start.js dist/capture')
     },
 
