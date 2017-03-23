@@ -5,8 +5,10 @@
   "scripts": {
     "DEBUG": "npm run TEST -- --inspect-brk",
     "TEST": "env $(cat .bus | xargs) node",
+    "link": "npm link @theatersoft/server @theatersoft/bus",
     "auth": "npm run TEST -- auth.js",
     "clear-cookies": "echo '{}' >.cookies.json",
+    "session": "npm run TEST -- session.js",
     "config": "npm run TEST -- config.js",
     "login": "npm run TEST -- login.js",
     "debug-auth": "npm run DEBUG -- auth.js",
