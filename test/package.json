@@ -13,7 +13,8 @@
     "login": "npm run TEST -- login.js",
     "debug-auth": "npm run DEBUG -- auth.js",
     "debug-config": "npm run DEBUG -- config.js",
-    "debug-login": "npm run DEBUG -- login.js"
+    "debug-login": "npm run DEBUG -- login.js",
+    "debug-session": "npm run DEBUG -- session.js"
   },
   "author": "Rob Huehn <rob@theatersoft.com>",
   "private": true,
