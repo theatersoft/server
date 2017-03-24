@@ -32,16 +32,7 @@ export function start () {
                 https = require('https'),
                 express = require('express'),
                 app = express()
-
             web(express, app)
-            //app.use((req, res, next) => {
-            //    res.setHeader('Access-Control-Allow-Origin', req.get('origin') || '*')
-            //    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-            //    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, Accept-Language, Accept-Encoding');
-            //    res.setHeader('Access-Control-Allow-Credentials', true);
-            //    if ('OPTIONS' == req.method) res.send(200)
-            //    else next()
-            //})
             app.set('json replacer', (key, value) => typeof value === 'function' ? '()' : value)
             app.use(express.cookieParser())
             app.get('/theatersoft/rpc', rpc.get)
@@ -78,4 +69,3 @@ export function start () {
 }
 
 export {createSession} from './session'
-export {THEATERSOFT_CONFIG_HOME} from './config'
