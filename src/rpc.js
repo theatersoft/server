@@ -3,7 +3,6 @@ import config from './config'
 import {checkSession, rpc as sessionRpc} from './session'
 
 const
-    https = require('https'),
     targets = Object.assign({
             Session: sessionRpc,
             Rpc: {
