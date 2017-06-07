@@ -19,7 +19,7 @@
     "build": "node build.js && ls -l dist",
     "build:dist": "DIST=true npm run build",
     "debug-build": "node --inspect=9966 --debug-brk build",
-    "link": "(cd dist; npm link); npm link @theatersoft/bus @theatersoft/device",
+    "link": "npm link @theatersoft/bus @theatersoft/device",
     "publish": "node build.js publish",
     "remotedev": "remotedev --hostname=0.0.0.0 --port=6400"
   },
@@ -34,7 +34,7 @@
     "start-capture": "npm run BUS -- node capture/start.js",
     "debug-opt": "XDG_CONFIG_HOME=/opt/theatersoft/.config PORT=443 authbind node --inspect-brk server.js",
     "debug-dev": "PORT=5453 NODE_ENV=development node --inspect-brk server.js",
-    "debug-dev-child": "PORT=5453 NODE_ENV=development npm run BUS -- node --inspect server.js",
+    "debug-dev-child": "PORT=5453 NODE_ENV=development npm run BUS -- node --inspect-brk server.js",
     "systemctl-restart-theatersoft": "systemctl restart theatersoft",
     "systemctl-status-theatersoft": "systemctl status theatersoft",
     "systemctl-stop-theatersoft": "systemctl stop theatersoft",
