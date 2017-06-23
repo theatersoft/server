@@ -14,7 +14,8 @@ const
         db.find(q, (err, docs) => err ? reject(err) : resolve(docs.length > 0))),
     uuid = () =>
         "00000000-0000-4000-8000-000000000000".replace(/0/g, () => (0 | Math.random() * 16).toString(16)),
-    manager = bus.proxy('/Bus')
+    manager = bus.proxy('/Bus'),
+    idOfReq = req => req.headers.cookie && req.headers.cookie.slice(0, 4) === 'sid=' && req.headers.cookie.slice(4)
 
 export function check (id) {
     return !bus.root ? manager.check(id) :
@@ -26,7 +27,7 @@ export function check (id) {
 export function checkSession (req) {
     if (!Config.host.root)
         return Promise.resolve(true)
-    return check(req.headers.cookie && req.headers.cookie.slice(0, 4) === 'sid=' && req.headers.cookie.slice(4))
+    return check(idOfReq(req))
         .then(res => (!res && error('failed session check', req.ip, req.headers['user-agent']), res))
 }
 
@@ -51,6 +52,11 @@ export const rpc = {
             return true
         }
         return false
+    },
+
+    Register (args, _res, req) {
+        const id = idOfReq(req)
+        console.log('Session.Register', id, args[0])
     }
 }
 

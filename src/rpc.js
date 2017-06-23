@@ -44,7 +44,7 @@ const
                     return res.send({error: 'target not found'})
                 else if (!targets[target][method])
                     return res.send({error: 'method not found'})
-                p = targets[target][method](args, res)
+                p = targets[target][method](args, res, req)
             }
 
             if (p && p.then) {
