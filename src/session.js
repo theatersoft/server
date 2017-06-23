@@ -52,11 +52,24 @@ export const rpc = {
             return true
         }
         return false
-    },
-
-    Register (args, _res, req) {
-        const id = idOfReq(req)
-        console.log('Session.Register', id, args[0])
     }
 }
+
+const push = new class {
+    async start (webpush) {
+        this.webpush = webpush
+        log('starting Push', webpush)
+        await bus.registerObject('Push', this)
+    }
+
+    register (id, subscription) {
+        console.log('Push.register', id, subscription)
+    }
+
+    sendPush () {
+    }
+}
+
+Config.loaded
+    .then(() => push.start(Config.config.webpush))
 
