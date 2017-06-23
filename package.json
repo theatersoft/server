@@ -18,29 +18,46 @@
   "scripts": {
     "build": "node build.js && ls -l dist",
     "build:dist": "DIST=true npm run build",
-    "debug-build": "node --inspect=9966 --debug-brk build",
+    "debug-build": "node --inspect-brk=9966 build",
     "link": "npm link @theatersoft/bus @theatersoft/device",
     "publish": "node build.js publish",
     "remotedev": "remotedev --hostname=0.0.0.0 --port=6400"
   },
-  "distScripts": {
-    "BUS": "env $(cat /opt/theatersoft/.config/theatersoft/.bus | xargs)",
-    "link": "npm link; npm link @theatersoft/server @theatersoft/client @theatersoft/automation @theatersoft/bus @theatersoft/device @theatersoft/serial @theatersoft/x10 @theatersoft/zwave",
-    "start": "PORT=443 authbind node server.js",
-    "start-opt": "XDG_CONFIG_HOME=/opt/theatersoft/.config PORT=443 authbind node server.js",
-    "start-child": "npm run BUS -- node server.js",
-    "start-dev": "PORT=5453 NODE_ENV=development node server.js",
-    "start-dev-child": "PORT=5453 NODE_ENV=development npm run BUS -- node server.js",
-    "start-capture": "npm run BUS -- node capture/start.js",
-    "debug-opt": "XDG_CONFIG_HOME=/opt/theatersoft/.config PORT=443 authbind node --inspect-brk server.js",
-    "debug-dev": "PORT=5453 NODE_ENV=development node --inspect-brk server.js",
-    "debug-dev-child": "PORT=5453 NODE_ENV=development npm run BUS -- node --inspect-brk server.js",
-    "systemctl-restart-theatersoft": "systemctl restart theatersoft",
-    "systemctl-status-theatersoft": "systemctl status theatersoft",
-    "systemctl-stop-theatersoft": "systemctl stop theatersoft",
-    "systemctl-restart-theatersoft-capture": "systemctl restart theatersoft-capture",
-    "systemctl-status-theatersoft-capture": "systemctl status theatersoft-capture",
-    "systemctl-stop-theatersoft-capture": "systemctl stop theatersoft-capture"
+  "dist": {
+    "dependencies": {
+      "@theatersoft/bus": "~1",
+      "express": "3.x",
+      "nedb": "~0.10.5",
+      "redirect-https": "^1.1.1",
+      "request": "~2.65.0",
+      "greenlock": "^2.1.12",
+      "le-challenge-fs": "^2.0.8",
+      "le-store-certbot": "^2.0.3",
+      "web-push": "^3.2.2"
+    },
+    "devDependencies": {},
+    "peerDependencies": {
+      "@theatersoft/client": "~1"
+    },
+    "scripts": {
+      "BUS": "env $(cat /opt/theatersoft/.config/theatersoft/.bus | xargs)",
+      "link": "npm link; npm link @theatersoft/server @theatersoft/client @theatersoft/automation @theatersoft/bus @theatersoft/device @theatersoft/serial @theatersoft/x10 @theatersoft/zwave",
+      "start": "PORT=443 authbind node server.js",
+      "start-opt": "XDG_CONFIG_HOME=/opt/theatersoft/.config PORT=443 authbind node server.js",
+      "start-child": "npm run BUS -- node server.js",
+      "start-dev": "PORT=5453 NODE_ENV=development node server.js",
+      "start-dev-child": "PORT=5453 NODE_ENV=development npm run BUS -- node server.js",
+      "start-capture": "npm run BUS -- node capture/start.js",
+      "debug-opt": "XDG_CONFIG_HOME=/opt/theatersoft/.config PORT=443 authbind node --inspect-brk server.js",
+      "debug-dev": "PORT=5453 NODE_ENV=development node --inspect-brk server.js",
+      "debug-dev-child": "PORT=5453 NODE_ENV=development npm run BUS -- node --inspect-brk server.js",
+      "systemctl-restart-theatersoft": "systemctl restart theatersoft",
+      "systemctl-status-theatersoft": "systemctl status theatersoft",
+      "systemctl-stop-theatersoft": "systemctl stop theatersoft",
+      "systemctl-restart-theatersoft-capture": "systemctl restart theatersoft-capture",
+      "systemctl-status-theatersoft-capture": "systemctl status theatersoft-capture",
+      "systemctl-stop-theatersoft-capture": "systemctl stop theatersoft-capture"
+    }
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
@@ -60,19 +77,6 @@
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-sourcemaps": "^0.4.1",
     "shelljs": "^0.7.0"
-  },
-  "distDependencies": {
-    "@theatersoft/bus": "~1",
-    "express": "3.x",
-    "nedb": "~0.10.5",
-    "redirect-https": "^1.1.1",
-    "request": "~2.65.0",
-    "greenlock": "^2.1.12",
-    "le-challenge-fs": "^2.0.8",
-    "le-store-certbot": "^2.0.3"
-  },
-  "distPeerDependencies": {
-    "@theatersoft/client": "~1"
   },
   "dependencies": {}
 }

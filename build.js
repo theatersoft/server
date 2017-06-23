@@ -1,5 +1,6 @@
 'use strict'
 require('shelljs/make')
+process.on('unhandledRejection', e => console.log(e))
 
 const
     pkg = require('./package.json'),
@@ -7,6 +8,7 @@ const
     DIST = process.env.DIST === 'true',
     path = require('path'),
     fs = require('fs'),
+    writeJson = (file, json) => fs.writeFileSync(file, JSON.stringify(json, null, '  '), 'utf-8'),
     copyright = `/*\n${fs.readFileSync('COPYRIGHT', 'utf8')}\n */`,
     rollup = require('rollup'),
     babel = require('rollup-plugin-babel')({
@@ -45,7 +47,7 @@ const targets = {
                 entry: `${src}/index.js`,
                 external: [
                     'util', 'fs', 'path', 'http', 'net', 'child_process',
-                    ...Object.keys(pkg.distDependencies)
+                    ...Object.keys(pkg.dist.dependencies)
                 ],
                 plugins: [
                     babel,
@@ -63,17 +65,7 @@ const targets = {
     },
 
     package () {
-        const p = Object.assign({}, pkg, {
-            private: !DIST,
-            dependencies: pkg.distDependencies,
-            distDependencies: undefined,
-            peerDependencies: pkg.distPeerDependencies,
-            distPeerDependencies: undefined,
-            devDependencies: undefined,
-            scripts: pkg.distScripts,
-            distScripts: undefined
-        })
-        fs.writeFileSync('dist/package.json', JSON.stringify(p, null, '  '), 'utf-8')
+        writeJson('dist/package.json', Object.assign({}, pkg, {private: !DIST, dist: undefined}, pkg.dist))
         exec('cp LICENSE README.md .npmignore src/server.js dist')
         exec('cp src/capture/start.js dist/capture')
     },
