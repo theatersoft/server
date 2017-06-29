@@ -30,7 +30,8 @@ const
 //        log(req.headers.cookie, target, method, args)
 
         if (target === 'Session' && method === 'Login')
-            return res.send({result: sessionRpc.Login(args, res, req)})
+            return sessionRpc.Login(args, res, req)
+                .then(result => res.send({result}))
 
         checkSession(req).then(found => {
             if (!found)

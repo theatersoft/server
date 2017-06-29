@@ -18,6 +18,45 @@ db.findAsync = promisify(db.find)
 db.findOneAsync = promisify(db.findOne)
 db.updateAsync = promisify(db.update)
 
+export class Session {
+    async start ({webpush}) {
+        this.vapidDetails = webpush
+        log('starting Session', webpush)
+        await bus.registerObject('Session', this)
+    }
+
+    registerSubscription (id, subscription) {
+        log('Session.registerSubscription', id, subscription)
+        return db.updateAsync({id}, {$set: subscription})
+    }
+
+    unregisterSubscription (subscription) {
+
+    }
+
+    sendPush (message) {
+        db.findAsync({endpoint: {$exists: true}})
+            .then(subs =>
+                subs.forEach(sub => {
+                    webpush.sendNotification(sub, message, {vapidDetails: this.vapidDetails})
+                        .catch(e => (log('web-push failed', sub), e))
+                        .then(res => log(res))
+                })
+            )
+    }
+
+    createSession (name, ip, ua) {return (createSession(name, ip, ua))}
+}
+
+let session
+Config.started.then(config => {
+    if (bus.root) {
+        session = new Session()
+        session.start(config)
+    } else
+        session = bus.proxy('Session')
+})
+
 export function check (id) {
     return !bus.root ? manager.check(id) :
         !id ? Promise.resolve(false) :
@@ -41,9 +80,9 @@ export function createSession (name, ip, ua) {
 }
 
 export const rpc = {
-    Login (args, res, req) {
+    async Login (args, res, req) {
         if (args.length == 1 && args[0] === Config.config.password) {
-            const sid = createSession(undefined, req.ip, req.headers['user-agent'])
+            const sid = await session.createSession(undefined, req.ip, req.headers['user-agent'])
             //log(sid)
             res.cookie('sid', sid, {
                 // avoid duplicate cookie browser issues; don't specify an explicit domain
@@ -56,35 +95,3 @@ export const rpc = {
         return false
     }
 }
-
-export const session = new class Session {
-    async start ({webpush}) {
-        this.vapidDetails = webpush
-        log('starting Session', webpush)
-        await bus.registerObject('Session', this)
-    }
-
-    registerSubscription (id, subscription) {
-        log('Session.registerSubscription', id, subscription)
-        return db.updateAsync({id}, {$set: subscription})
-    }
-
-    unregisterSubscription(subscription) {
-        
-    }
-
-    sendPush (message) {
-        db.findAsync({endpoint: {$exists: true}})
-            .then(subs =>
-                subs.forEach(sub => {
-                    webpush.sendNotification(sub, message, {vapidDetails: this.vapidDetails})
-                        .catch(e => (log('web-push failed', sub), e))
-                        .then(res => log(res))
-                })
-            )
-    }
-}
-
-bus.root && Config.started
-    .then(config => session.start(config))
-
