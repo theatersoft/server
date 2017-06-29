@@ -1,5 +1,5 @@
 import {error} from '@theatersoft/bus'
-import config from './config'
+import {config} from './config'
 import {checkSession} from './session'
 import request from 'request'
 const DEV = process.env.NODE_ENV === 'development'

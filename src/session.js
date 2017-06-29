@@ -1,5 +1,5 @@
 import {bus, proxy, log, error} from '@theatersoft/bus'
-import Config, {THEATERSOFT_CONFIG_HOME} from './config'
+import {config, THEATERSOFT_CONFIG_HOME} from './config'
 
 const
     {promisify} = require('util'),
@@ -7,8 +7,7 @@ const
     webpush = require('web-push'),
     db = new Nedb({filename: `${THEATERSOFT_CONFIG_HOME}/session.db`, autoload: true}),
     cache = {},
-    uuid = () =>
-        "00000000-0000-4000-8000-000000000000".replace(/0/g, () => (0 | Math.random() * 16).toString(16)),
+    uuid = () => '00000000-0000-4000-8000-000000000000'.replace(/0/g, () => (0 | Math.random() * 16).toString(16)),
     manager = bus.proxy('/Bus'),
     idOfReq = req => req.headers.cookie && req.headers.cookie.slice(0, 4) === 'sid=' && req.headers.cookie.slice(4)
 
@@ -27,7 +26,7 @@ export function check (id) {
 }
 
 export function checkSession (req) {
-    if (!Config.host.root)
+    if (!config.host.root)
         return Promise.resolve(true)
     return check(idOfReq(req))
         .then(res => (!res && error('failed session check', req.ip, req.headers['user-agent']), res))
@@ -43,7 +42,7 @@ export function createSession (name, ip, ua) {
 
 export const rpc = {
     Login (args, res, req) {
-        if (args.length == 1 && args[0] === Config.config.password) {
+        if (args.length == 1 && args[0] === config.config.password) {
             const sid = createSession(undefined, req.ip, req.headers['user-agent'])
             //log(sid)
             res.cookie('sid', sid, {
@@ -86,6 +85,6 @@ const push = new class {
     }
 }
 
-Config.started
-    .then(() => push.start(Config.config.webpush))
+config.started
+    .then(() => push.start(config.config.webpush))
 

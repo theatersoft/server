@@ -11,17 +11,17 @@ const
     hosts = {},
     hostname = os.hostname()
 
-let config, host
+let _config, host
 
 bus.started()
     .then(() => {
         (bus.root ? Promise.resolve(read()) : proxy('Config').get())
             .then(config_ => {
-                config = config_
-                log('Config', hostname, config)
+                _config = config_
+                log('Config', hostname, _config)
 
                 // hosts map
-                config.hosts.forEach(h => {
+                _config.hosts.forEach(h => {
                     hosts[h.name] = h
                     if (h.name === hostname) {
                         if (bus.root) h.root = true
@@ -30,41 +30,39 @@ bus.started()
                 })
 
                 // camera map
-                config.hosts.forEach(h => {
+                _config.hosts.forEach(h => {
                     h.cameras && h.cameras.forEach(cam => {
                         cam.host = h.name
                         cameras[cam.name] = cam
                     })
                 })
                 started.resolve()
-                bus.root && bus.registerObject('Config', Config)
+                bus.root && bus.registerObject('Config', config)
             })
     })
 
-const Config = new class {
+export const config = new class {
+    get started () {
+        return started.promise
+    }
+
+    get config () {return _config}
+
+    get host () {return host}
+
+    get hostname () {return hostname}
+
+    get hosts () {return hosts}
+
+    get cameras () {return cameras}
+
     get () {
         log('bus Config.get')
-        return config
+        return _config
     }
 
     getHost () {
         log('bus Config.getHost')
         return host
     }
-}
-
-export default {
-    get started () {
-        return started.promise
-    },
-
-    get config () {return config},
-
-    get host () {return host},
-
-    get hostname () {return hostname},
-
-    get hosts () {return hosts},
-
-    get cameras () {return cameras},
 }

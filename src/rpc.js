@@ -1,5 +1,5 @@
 import {log} from '@theatersoft/bus'
-import config from './config'
+import {config} from './config'
 import {checkSession, rpc as sessionRpc} from './session'
 
 const
