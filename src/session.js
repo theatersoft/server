@@ -27,7 +27,7 @@ export class Session {
 
     registerSubscription (id, subscription) {
         log('Session.registerSubscription', id, subscription)
-        return db.updateAsync({id}, {$set: subscription})
+        return db.updateAsync({id}, {$set: {subscription}})
     }
 
     unregisterSubscription (subscription) {
@@ -35,11 +35,11 @@ export class Session {
     }
 
     sendPush (message) {
-        db.findAsync({endpoint: {$exists: true}})
-            .then(subs =>
-                subs.forEach(sub => {
-                    webpush.sendNotification(sub, message, {vapidDetails: this.vapidDetails})
-                        .catch(e => (log('web-push failed', sub), e))
+        db.findAsync({subscription: {$exists: true}})
+            .then(sessions =>
+                sessions.forEach(({subscription}) => {
+                    webpush.sendNotification(subscription, message, {vapidDetails: this.vapidDetails})
+                        .catch(e => (log('web-push failed', subscription), e))
                         .then(res => log(res))
                 })
             )
