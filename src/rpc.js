@@ -1,5 +1,5 @@
 import {log} from '@theatersoft/bus'
-import {config} from './config'
+import {Config} from './config'
 import {checkSession, rpc as sessionRpc} from './session'
 
 const
@@ -37,7 +37,7 @@ const
                 return res.send(401)
 
             let p
-            if (host && host !== config.hostname)
+            if (host && host !== Config.hostname)
                 p = request(host, target, method, args)
             else {
                 if (!targets[target])

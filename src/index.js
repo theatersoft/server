@@ -1,6 +1,6 @@
 import {bus, executor, log, error, setTag} from '@theatersoft/bus'
 import {check} from './session'
-import {config, THEATERSOFT_CONFIG_HOME} from './config'
+import {Config, THEATERSOFT_CONFIG_HOME} from './config'
 import web from './web'
 import rpc from './rpc'
 import imageProxy from './imageProxy'
@@ -26,8 +26,8 @@ export function start () {
         })
 
     if (!port) log('Missing PORT (server not started)')
-    port && config.started
-        .then(() => {
+    port && Config.started
+        .then(config => {
             const
                 https = require('https'),
                 express = require('express'),
@@ -42,7 +42,7 @@ export function start () {
             }, express.json(), rpc.post)
             app.get('/theatersoft/image/:name', imageProxy.get)
 
-            const {letsencrypt} = config.config
+            const {letsencrypt} = config
             if (port === 443 && letsencrypt)
                 server.resolve(createServer({app, ...letsencrypt}))
             else
@@ -50,9 +50,11 @@ export function start () {
             log('Listening on port ' + port)
         })
 
-    config.started
-        .then(() => {
-            const {host: {services = []}, config: {configs = {}}} = config
+    Config.started
+        .then(config => {
+            const
+                {services = []} = Config.host,
+                {configs = {}} = config
             services.forEach(options => {
                 if (options.enabled !== false) {
                     log(`Starting service ${options.name}`)

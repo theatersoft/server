@@ -1,5 +1,5 @@
 import {bus, proxy, log, error} from '@theatersoft/bus'
-import {config, THEATERSOFT_CONFIG_HOME} from './config'
+import {Config, THEATERSOFT_CONFIG_HOME} from './config'
 
 const
     {promisify} = require('util'),
@@ -26,7 +26,7 @@ export function check (id) {
 }
 
 export function checkSession (req) {
-    if (!config.host.root)
+    if (!Config.host.root)
         return Promise.resolve(true)
     return check(idOfReq(req))
         .then(res => (!res && error('failed session check', req.ip, req.headers['user-agent']), res))
@@ -42,7 +42,7 @@ export function createSession (name, ip, ua) {
 
 export const rpc = {
     Login (args, res, req) {
-        if (args.length == 1 && args[0] === config.config.password) {
+        if (args.length == 1 && args[0] === Config.config.password) {
             const sid = createSession(undefined, req.ip, req.headers['user-agent'])
             //log(sid)
             res.cookie('sid', sid, {
@@ -57,7 +57,7 @@ export const rpc = {
     }
 }
 
-export const session = new class {
+export const session = new class Session {
     async start ({webpush}) {
         this.vapidDetails = webpush
         log('starting Session', webpush)
@@ -85,6 +85,6 @@ export const session = new class {
     }
 }
 
-config.started
-    .then(() => session.start(config.config))
+bus.root && Config.started
+    .then(config => session.start(config))
 

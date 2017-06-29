@@ -36,25 +36,25 @@ bus.started()
                         cameras[cam.name] = cam
                     })
                 })
-                started.resolve()
-                bus.root && bus.registerObject('Config', config)
+                started.resolve(_config)
+                bus.root && bus.registerObject('Config', new Config())
             })
     })
 
-export const config = new class {
-    get started () {
+export class Config {
+    static get started () {
         return started.promise
     }
 
-    get config () {return _config}
+    static get config () {return _config}
 
-    get host () {return host}
+    static get host () {return host}
 
-    get hostname () {return hostname}
+    static get hostname () {return hostname}
 
-    get hosts () {return hosts}
+    static get hosts () {return hosts}
 
-    get cameras () {return cameras}
+    static get cameras () {return cameras}
 
     get () {
         log('bus Config.get')
