@@ -6,7 +6,7 @@ const
     fs = require('fs'),
     os = require('os'),
     read = () => JSON.parse(fs.readFileSync(`${THEATERSOFT_CONFIG_HOME}/config.json`, 'utf8')),
-    loaded = executor(),
+    started = executor(),
     cameras = {},
     hosts = {},
     hostname = os.hostname()
@@ -36,7 +36,7 @@ bus.started()
                         cameras[cam.name] = cam
                     })
                 })
-                loaded.resolve()
+                started.resolve()
                 bus.root && bus.registerObject('Config', Config)
             })
     })
@@ -54,8 +54,8 @@ const Config = new class {
 }
 
 export default {
-    get loaded () {
-        return loaded.promise
+    get started () {
+        return started.promise
     },
 
     get config () {return config},

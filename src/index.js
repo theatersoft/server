@@ -26,7 +26,7 @@ export function start () {
         })
 
     if (!port) log('Missing PORT (server not started)')
-    port && Config.loaded
+    port && Config.started
         .then(() => {
             const
                 https = require('https'),
@@ -50,7 +50,7 @@ export function start () {
             log('Listening on port ' + port)
         })
 
-    Config.loaded
+    Config.started
         .then(() => {
             const {host: {services = []}, config: {configs = {}}} = Config
             services.forEach(options => {

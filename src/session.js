@@ -86,6 +86,6 @@ const push = new class {
     }
 }
 
-Config.loaded
+Config.started
     .then(() => push.start(Config.config.webpush))
 
