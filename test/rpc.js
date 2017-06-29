@@ -1,6 +1,5 @@
 'use strict'
 const
-    fs = require('fs'),
     url = require('url'),
     bus = process.env.BUS || 'ws://localhost:5453',
     {protocol, host} = url.parse(bus),

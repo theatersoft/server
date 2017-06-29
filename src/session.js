@@ -57,19 +57,19 @@ export const rpc = {
     }
 }
 
-const push = new class {
-    async start (vapidDetails) {
-        this.vapidDetails = vapidDetails
-        log('starting Push', vapidDetails)
-        await bus.registerObject('Push', this)
+export const session = new class {
+    async start ({webpush}) {
+        this.vapidDetails = webpush
+        log('starting Session', webpush)
+        await bus.registerObject('Session', this)
     }
 
-    register (id, subscription) {
-        log('Push.register', id, subscription)
+    registerSubscription (id, subscription) {
+        log('Session.registerSubscription', id, subscription)
         return db.updateAsync({id}, {$set: subscription})
     }
 
-    unregister(subscription) {
+    unregisterSubscription(subscription) {
         
     }
 
@@ -86,5 +86,5 @@ const push = new class {
 }
 
 config.started
-    .then(() => push.start(config.config.webpush))
+    .then(() => session.start(config.config))
 

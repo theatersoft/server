@@ -1,5 +1,4 @@
 import {log} from '@theatersoft/bus'
-import fs from 'fs'
 import path from 'path'
 import {checkSession} from './session'
 
