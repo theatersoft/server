@@ -26,12 +26,11 @@ export class Session {
     }
 
     registerSubscription (id, subscription) {
-        log('Session.registerSubscription', id, subscription)
         return db.updateAsync({id}, {$set: {subscription}})
     }
 
-    unregisterSubscription (subscription) {
-
+    unregisterSubscription (id) {
+        return db.updateAsync({id}, {$unset: {subscription: true}})
     }
 
     sendPush (message) {
