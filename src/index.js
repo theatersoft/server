@@ -5,6 +5,7 @@ import web from './web'
 import rpc from './rpc'
 import imageProxy from './imageProxy'
 import {createServer} from './letsencrypt'
+import './settings'
 
 const
     fs = require('fs'),
