@@ -36,9 +36,12 @@ export class Session {
     sendPush (message) {
         db.findAsync({subscription: {$exists: true}})
             .then(sessions =>
-                sessions.forEach(({subscription}) => {
+                sessions.forEach(({id, subscription}) => {
                     webpush.sendNotification(subscription, message, {vapidDetails: this.vapidDetails})
-                        .catch(e => (log('web-push failed', subscription), e))
+                        .catch(e => {
+                            log('web-push failed', e, id, subscription)
+                            if (e.statusCode === 410) this.unregisterSubscription(id)
+                        })
                         .then(res => log(res))
                 })
             )
