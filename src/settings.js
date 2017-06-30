@@ -3,19 +3,21 @@ import {THEATERSOFT_CONFIG_HOME} from './config'
 
 const
     fs = require('fs'),
-    read = () => JSON.parse(fs.readFileSync(`${THEATERSOFT_CONFIG_HOME}/settings.json`, 'utf8')),
+    file = `${THEATERSOFT_CONFIG_HOME}/settings.json`,
+    read = () => JSON.parse(fs.readFileSync(file, 'utf8')),
+    write = json => fs.writeFileSync(file, JSON.stringify(json, null, '  '), 'utf-8'),
     started = executor()
 
-let _settings
+let state, obj
 
 bus.started()
     .then(() => {
         (bus.root ? Promise.resolve(read()) : proxy('Settings').get())
             .then(settings_ => {
-                _settings = settings_
-                log('Settings', _settings)
-                started.resolve(_settings)
-                bus.root && bus.registerObject('Settings', new Settings())
+                state = settings_
+                log('Settings', state)
+                started.resolve(state)
+                if (bus.root) obj = bus.registerObject('Settings', new Settings())
             })
     })
 
@@ -24,10 +26,17 @@ export class Settings {
         return started.promise
     }
 
-    static get () {return _settings}
+    static get () {return state}
 
-    get () {
+    getState () {
         log('bus Settings.get')
-        return _settings
+        return state
+    }
+
+    setState (state_) {
+        const t = Object.assign({}, state, state_)
+        write(t)
+        state = t
+        obj.signal('state', state)
     }
 }
