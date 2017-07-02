@@ -5,38 +5,33 @@ const
     fs = require('fs'),
     file = `${THEATERSOFT_CONFIG_HOME}/settings.json`,
     read = () => JSON.parse(fs.readFileSync(file, 'utf8')),
-    write = json => fs.writeFileSync(file, JSON.stringify(json, null, '  '), 'utf-8'),
-    started = executor()
-
-let state, obj
-
-bus.started()
-    .then(() => {
-        (bus.root ? Promise.resolve(read()) : proxy('Settings').get())
-            .then(settings_ => {
-                state = settings_
-                log('Settings', state)
-                started.resolve(state)
-                if (bus.root) obj = bus.registerObject('Settings', new Settings())
-            })
-    })
+    write = json => (fs.writeFileSync(file, JSON.stringify(json, null, '  '), 'utf-8'), json)
 
 export class Settings {
-    static get started () {
-        return started.promise
+    constructor () {
+        this.started = executor()
+        bus.started()
+            .then(() => {
+                (bus.root ? Promise.resolve(read()) : proxy('Settings').getState())
+                    .then(state => {
+                        this.state = state
+                        this.started.resolve(state)
+                        if (bus.root) bus.registerObject('Settings', this)
+                            .then(obj => this.obj = obj)
+                    })
+            })
     }
 
-    static get () {return state}
+    static get started () {return this.started.promise}
 
-    getState () {
-        log('bus Settings.get')
-        return state
-    }
+    static get () {return this.state}
 
-    setState (state_) {
-        const t = Object.assign({}, state, state_)
-        write(t)
-        state = t
-        obj.signal('state', state)
+    getState () {return this.state}
+
+    setState (state) {
+        this.state = write(Object.assign({}, this.state, state))
+        obj.signal('state', this.state)
     }
 }
+
+new Settings()
