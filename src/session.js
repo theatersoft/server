@@ -1,5 +1,6 @@
 import {bus, proxy, log, error} from '@theatersoft/bus'
 import {Config, THEATERSOFT_CONFIG_HOME} from './config'
+import {Settings} from './settings'
 
 const
     {promisify} = require('util'),
@@ -83,6 +84,9 @@ export function createSession (name, ip, ua) {
 
 export const rpc = {
     async Login (args, res, req) {
+        if (!(await Settings.instance().getState()).pairing) {
+            return false
+        }
         if (args.length == 1 && args[0] === Config.config.password) {
             const sid = await session.createSession(undefined, req.ip, req.headers['user-agent'])
             //log(sid)
