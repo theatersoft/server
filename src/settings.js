@@ -9,7 +9,9 @@ const
     started = executor()
 
 let instance
-bus.started().then(() => instance = bus.root ? new Settings() : proxy('Settings'))
+bus.started().then(() => {
+    instance = bus.root ? new Settings() : proxy('Settings')
+})
 
 export class Settings {
     constructor () {
@@ -25,7 +27,7 @@ export class Settings {
 
     static get started () {return started.promise}
 
-    static instance () {return instance}
+    static get instance () {return instance}
 
     getState () {return this.state}
 

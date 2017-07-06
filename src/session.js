@@ -84,9 +84,8 @@ export function createSession (name, ip, ua) {
 
 export const rpc = {
     async Login (args, res, req) {
-        if (!(await Settings.instance().getState()).pairing) {
-            return false
-        }
+        const {pairing} = await Settings.instance.getState()
+        if (!pairing) return false
         if (args.length == 1 && args[0] === Config.config.password) {
             const sid = await session.createSession(undefined, req.ip, req.headers['user-agent'])
             //log(sid)
