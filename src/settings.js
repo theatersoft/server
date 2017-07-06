@@ -30,7 +30,7 @@ export class Settings {
 
     setState (state) {
         this.state = write(Object.assign({}, this.state, state))
-        obj.signal('state', this.state)
+        this.obj.signal('state', this.state)
     }
 }
 
