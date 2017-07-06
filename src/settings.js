@@ -5,26 +5,27 @@ const
     fs = require('fs'),
     file = `${THEATERSOFT_CONFIG_HOME}/settings.json`,
     read = () => JSON.parse(fs.readFileSync(file, 'utf8')),
-    write = json => (fs.writeFileSync(file, JSON.stringify(json, null, '  '), 'utf-8'), json)
+    write = json => (fs.writeFileSync(file, JSON.stringify(json, null, '  '), 'utf-8'), json),
+    started = executor()
+
+let instance
+bus.started().then(() => instance = bus.root ? new Settings() : proxy('Settings'))
 
 export class Settings {
     constructor () {
-        this.started = executor()
+        if (instance) throw new Error()
         bus.started()
             .then(() => {
-                (bus.root ? Promise.resolve(read()) : proxy('Settings').getState())
-                    .then(state => {
-                        this.state = state
-                        this.started.resolve(state)
-                        if (bus.root) bus.registerObject('Settings', this)
-                            .then(obj => this.obj = obj)
-                    })
+                this.state = read()
+                started.resolve()
+                bus.registerObject('Settings', this)
+                    .then(obj => this.obj = obj)
             })
     }
 
-    static get started () {return this.started.promise}
+    static get started () {return started.promise}
 
-    static get () {return this.state}
+    static instance () {return instance}
 
     getState () {return this.state}
 
@@ -33,5 +34,3 @@ export class Settings {
         this.obj.signal('state', this.state)
     }
 }
-
-new Settings()
