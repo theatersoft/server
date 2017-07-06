@@ -84,9 +84,10 @@ export function createSession (name, ip, ua) {
 
 export const rpc = {
     async Login (args, res, req) {
-        const {pairing} = await Settings.instance.getState()
-        if (!pairing) return false
-        if (args.length == 1 && args[0] === Config.config.password) {
+        const
+            {pairing} = await Settings.instance.getState(),
+            now = () => new Date().toLocaleTimeString('en-US', {hour: 'numeric', minute: 'numeric', second: 'numeric'}).toLowerCase()
+        if (pairing && args.length == 1 && args[0] === Config.config.password) {
             const sid = await session.createSession(undefined, req.ip, req.headers['user-agent'])
             //log(sid)
             res.cookie('sid', sid, {
@@ -95,8 +96,16 @@ export const rpc = {
                 secure: true,
                 maxAge: 31536000000
             })
+            session.sendPush(JSON.stringify({
+                body: `New client paired at ${now()}`,
+                icon: '/res/theatersoft-logo-round-accent.png'
+            }))
             return true
         }
+        session.sendPush(JSON.stringify({
+            body: `Failed client pairing at ${now()} (${pairing ? 'passcode incorrect' : 'pairing disabled'})`,
+            icon: '/res/theatersoft-logo-round-accent.png'
+        }))
         return false
     }
 }
