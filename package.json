@@ -33,6 +33,7 @@
       "greenlock": "^2.1.12",
       "le-challenge-fs": "^2.0.8",
       "le-store-certbot": "^2.0.3",
+      "util.promisify": "^1.0.0",
       "web-push": "^3.2.2"
     },
     "devDependencies": {},

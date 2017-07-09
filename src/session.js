@@ -3,7 +3,8 @@ import {Config, THEATERSOFT_CONFIG_HOME} from './config'
 import {Settings} from './settings'
 
 const
-    {promisify} = require('util'),
+    //{promisify} = require('util'),
+    promisify = require('util.promisify'), // TODO temp polyfill until Node 8
     Nedb = require('nedb'),
     webpush = require('web-push'),
     db = new Nedb({filename: `${THEATERSOFT_CONFIG_HOME}/session.db`, autoload: true}),
