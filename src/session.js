@@ -50,6 +50,8 @@ export class Session {
     }
 
     createSession (name, ip, ua) {return (createSession(name, ip, ua))}
+
+    getSessions () {return db.findAsync({})}
 }
 
 let session
