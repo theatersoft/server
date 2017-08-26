@@ -6,7 +6,7 @@ import {bus} from '@theatersoft/bus'
 const DEV = process.env.NODE_ENV === 'development'
 import url from 'url'
 
-const {protocol, host} = url.parse(process.env.BUS)
+const host = process.env.BUS && url.parse(process.env.BUS).host
 
 export default {
     get (req, res) {
