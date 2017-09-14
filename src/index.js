@@ -43,9 +43,9 @@ export function start () {
             }, express.json(), rpc.post)
             app.get('/theatersoft/image/:name', imageProxy.get)
 
-            const {letsencrypt} = config
-            if (port === 443 && letsencrypt)
-                server.resolve(createServer({app, ...letsencrypt}))
+            const letsencrypt = {port, ...config.letsencrypt}
+            if (port && port === letsencrypt.port)
+                server.resolve(createServer({app, port, ...letsencrypt}))
             else
                 server.resolve(https.createServer({key: read('server.key'), cert: read('server.cer')}, app).listen(port))
             log('Listening on port ' + port)

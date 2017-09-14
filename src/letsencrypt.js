@@ -13,7 +13,7 @@ const
     })
 
 let le
-export function createServer ({app, domain, email, production}) {
+export function createServer ({app, port, domain, email, production}) {
     function approveDomains (options, certs, cb) {
         // The domains being approved for the first time are listed in opts.domains
         // Certs being renewed are listed in certs.altnames
@@ -48,7 +48,7 @@ export function createServer ({app, domain, email, production}) {
 
     // handles your app
     return require('https').createServer(le.httpsOptions, le.middleware(app))
-        .listen(443, function () {
+        .listen(port, function () {
             log("Listening for ACME tls-sni-01 challenges and serve app on", this.address())
         })
 }
