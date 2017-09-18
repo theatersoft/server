@@ -105,8 +105,10 @@ export const rpc = {
             }))
             return true
         }
+        const body = `Failed client pairing at ${now()} (${pairing ? 'passcode incorrect' : 'pairing disabled'})`
+        log(body)
         session.sendPush(JSON.stringify({
-            body: `Failed client pairing at ${now()} (${pairing ? 'passcode incorrect' : 'pairing disabled'})`,
+            body,
             icon: '/res/theatersoft-logo-round-accent.png'
         }))
         return false
