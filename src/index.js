@@ -6,6 +6,7 @@ import rpc from './rpc'
 import imageProxy from './imageProxy'
 import {createServer} from './letsencrypt'
 import './settings'
+import './services'
 
 const
     fs = require('fs'),
@@ -49,25 +50,6 @@ export function start () {
             else
                 server.resolve(https.createServer({key: read('server.key'), cert: read('server.cer')}, app).listen(port))
             log('Listening on port ' + port)
-        })
-
-    Config.started
-        .then(config => {
-            const
-                {services = []} = Config.host,
-                {configs = {}} = config
-            services.forEach(options => {
-                if (options.enabled !== false) {
-                    log(`Starting service ${options.name}`)
-                    Object.assign(options.config, configs[options.name])
-                    const service = require(options.module)[options.export]
-                    new service().start(options)
-                        .then(
-                            () => log(`Started service ${options.name}`),
-                            err => error(`Failed to start service ${options.name} ${err}`)
-                        )
-                }
-            })
         })
 }
 
