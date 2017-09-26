@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
+    "TEST": "env $(cat /opt/theatersoft/.config/theatersoft/.bus | xargs) node",
     "DEBUG": "npm run TEST -- --inspect-brk",
-    "TEST": "env $(cat .bus | xargs) node",
     "link": "npm link @theatersoft/server @theatersoft/bus",
     "auth": "npm run TEST -- auth.js",
     "clear-cookies": "echo '{}' >.cookies.json",
