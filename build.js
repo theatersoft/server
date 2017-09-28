@@ -66,7 +66,7 @@ const targets = {
 
     package () {
         writeJson('dist/package.json', Object.assign({}, pkg, {private: !DIST, dist: undefined}, pkg.dist))
-        exec('cp LICENSE README.md .npmignore src/server.js dist')
+        exec('cp LICENSE README.md .npmignore src/start.js dist')
         exec('cp src/capture/start.js dist/capture')
     },
 
