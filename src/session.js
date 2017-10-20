@@ -10,7 +10,7 @@ const
     cache = {},
     uuid = () => '00000000-0000-4000-8000-000000000000'.replace(/0/g, () => (0 | Math.random() * 16).toString(16)),
     manager = bus.proxy('/Bus'),
-    idOfReq = req => req.headers.cookie && req.headers.cookie.slice(0, 4) === 'sid=' && req.headers.cookie.slice(4)
+    idOfReq = req => req.headers.cookie && req.headers.cookie.split('; ').find(s=>s.startsWith('sid=')).slice(4)
 
 db.ensureIndex({fieldName: 'id', unique: true})
 
