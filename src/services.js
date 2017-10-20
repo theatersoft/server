@@ -10,12 +10,16 @@ Config.started
             if (options.enabled !== false) {
                 log(`Starting service ${options.name}`)
                 Object.assign(options.config, configs[options.name])
-                const service = require(options.module)[options.export]
-                new service().start(options)
-                    .then(
-                        () => log(`Started service ${options.name}`),
-                        err => error(`Failed to start service ${options.name} ${err}`)
-                    )
+                try {
+                    const service = require(options.module)[options.export]
+                    new service().start(options)
+                        .then(
+                            () => log(`Started service ${options.name}`),
+                            e => error(`Failed to start service ${options.name} ${e}`)
+                        )
+                } catch (e) {
+                    error(`Failed to start service ${options.name} ${e}`)
+                }
             }
         })
     })

@@ -27,29 +27,34 @@ export function start () {
             log(`Bus name is ${bus.name}`)
         })
 
-    if (!port) log('Missing PORT (server not started)')
+    if (!port) log('Web server not started (PORT not set)')
     port && Config.started
         .then(config => {
             const
                 https = require('https'),
                 express = require('express'),
                 app = express()
-            web(express, app)
-            app.set('json replacer', (key, value) => typeof value === 'function' ? '()' : value)
-            app.use(express.cookieParser())
-            app.get('/theatersoft/rpc', rpc.get)
-            app.post('/theatersoft/rpc', (req, res, next) => {
-                req.headers['content-type'] = 'application/json';
-                next()
-            }, express.json(), rpc.post)
-            app.get('/theatersoft/image/:name', imageProxy.get)
+            try {
+                web(express, app)
+                app.set('json replacer', (key, value) => typeof value === 'function' ? '()' : value)
+                app.use(express.cookieParser())
+                app.get('/theatersoft/rpc', rpc.get)
+                app.post('/theatersoft/rpc', (req, res, next) => {
+                    req.headers['content-type'] = 'application/json';
+                    next()
+                }, express.json(), rpc.post)
+                app.get('/theatersoft/image/:name', imageProxy.get)
 
-            const letsencrypt = {port, ...config.letsencrypt}
-            if (port && config.letsencrypt && port === letsencrypt.port)
-                server.resolve(createServer({app, port, ...letsencrypt}))
-            else
-                server.resolve(https.createServer({key: read('server.key'), cert: read('server.cer')}, app).listen(port))
-            log('Listening on port ' + port)
+                const letsencrypt = {port, ...config.letsencrypt}
+                if (port && config.letsencrypt && port === letsencrypt.port)
+                    server.resolve(createServer({app, port, ...letsencrypt}))
+                else
+                    server.resolve(https.createServer({key: read('server.key'), cert: read('server.cer')}, app).listen(port))
+                log('Listening on port ' + port)
+            }
+            catch (e) {
+                error ('Failed to start web server', e)
+            }
         })
 }
 
