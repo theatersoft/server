@@ -17,7 +17,7 @@ const
         minified: DIST,
         //presets: [babili],
         plugins: [
-            //require("babel-plugin-transform-class-properties"),
+            require("babel-plugin-transform-class-properties"),
             [require("babel-plugin-transform-object-rest-spread"), {useBuiltIns: true}]
         ].concat(DIST ? [
             require("babel-plugin-minify-constant-folding"),
@@ -73,6 +73,18 @@ const targets = {
     publish () {
         console.log('target publish')
         exec('npm publish --access=public dist')
+    },
+
+    async watch () {
+        await targets.all()
+        require('chokidar').watch([
+                'src'
+            ])
+            .on('change', path => {
+                console.log(new Date().toLocaleTimeString(), path)
+                targets.all()
+            })
+            .on('error', e => console.log(e))
     },
 
     async all () {
