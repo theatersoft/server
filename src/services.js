@@ -8,9 +8,14 @@ class LocalServiceManager {
         }, o), {})
         Object.values(this.services)
             .forEach(({options}) => options.enabled !== false && this.startService(options.name))
+        bus.registerObject('service', this)
     }
 
-    getServiceState (name) {}
+    getServiceState (name) {
+        const service = this.services[name]
+        if (!service) throw `Unknown service ${name}`
+        return !!service.instance
+    }
 
     startService (name) {
         const service = this.services[name]
@@ -31,10 +36,34 @@ class LocalServiceManager {
         }
     }
 
-    stopService (name) {}
+    stopService (name) {
+        const service = this.services[name]
+        if (!service) throw `Failed to start service ${name}`
+        if (!service.instance) throw`Service not running ${name}`
+        log(`Stopping service ${options.name}`)
+        service.instance.stop()
+        delete service.instance
+        log(`Stopped service ${name}`)
+    }
 }
 
-class ServiceManager {}
+class ServiceManager {
+    constructor () {
+        // all services
+    }
+
+    getServiceState (name) {
+    }
+
+    startService (name) {
+    }
+
+    stopService (name) {
+    }
+}
 
 Config.started
-    .then(config => new LocalServiceManager(Config.host.services, config.configs))
+    .then(config => {
+        new LocalServiceManager(Config.host.services, config.configs)
+        if (bus.root) bus.registerObject('Service', new ServiceManager())
+    })
