@@ -6,7 +6,7 @@ import rpc from './rpc'
 import imageProxy from './imageProxy'
 import {createServer} from './letsencrypt'
 import './settings'
-import './services'
+import './serviceManager'
 
 const
     fs = require('fs'),
