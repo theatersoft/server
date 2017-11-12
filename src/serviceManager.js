@@ -1,4 +1,4 @@
-import {bus, proxy, log, error} from '@theatersoft/bus'
+import {bus, proxy, log, error, debug} from '@theatersoft/bus'
 import {Config} from './config'
 
 class LocalServiceManager {
@@ -48,22 +48,43 @@ class LocalServiceManager {
 }
 
 class ServiceManager {
-    constructor () {
-        // all services
+    constructor (services) {
+        this.services = services
+        Object.keys(services)
+            .forEach(name =>
+                bus.resolveName(name)
+                    .then(path => this.services[name].path = path)
+            )
     }
 
-    getServiceState (name) {
+    getServices (name) {
+        return name ? this.services[name] : this.services
     }
 
     startService (name) {
+        // if bus registered, start service
+        // get host path, LSM start service
     }
 
     stopService (name) {
     }
+
+    //registerService (name, host, path) {
+    //
+    //}
 }
 
 Config.started
     .then(config => {
         new LocalServiceManager(Config.host.services, config.configs)
-        if (bus.root) bus.registerObject('Service', new ServiceManager())
+        if (bus.root) {
+            const services = config.hosts
+                .reduce((a, {name: host, services}) => (
+                    services && a.push(...services.map(
+                        ({name, enabled = true}) => ({name, host, enabled})
+                    )), a
+                ), [])
+                .reduce((o, s) => (o[s.name] = s, o), {})
+            bus.registerObject('Service', new ServiceManager(services))
+        }
     })
