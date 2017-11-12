@@ -8,6 +8,7 @@
     "link": "npm link @theatersoft/server @theatersoft/bus",
     "auth": "npm run TEST -- auth.js",
     "clear-cookies": "echo '{}' >.cookies.json",
+    "service": "npm run TEST -- service.js",
     "session": "npm run TEST -- session.js",
     "config": "npm run TEST -- config.js",
     "login": "npm run TEST -- login.js",
