@@ -50,23 +50,35 @@ class LocalServiceManager {
 class ServiceManager {
     constructor (services) {
         this.services = services
-        Object.keys(services)
-            .forEach(name =>
-                bus.resolveName(name)
-                    .then(path => this.services[name].path = path)
-            )
+        Object.keys(services).forEach(this._updatePath)
     }
+
+    _updatePath = name =>
+        bus.resolveName(name)
+            .then(path => this.services[name].path = path)
 
     getServices (name) {
         return name ? this.services[name] : this.services
     }
 
-    startService (name) {
+    async startService (name) {
         // if bus registered, start service
+        // bus registered???
+
         // get host path, LSM start service
+        const service = this.services[name]
+        if (service) {
+            if (!service.path) await this._updatePath(name)
+            await bus.request(`path``service.startService`, name)
+        }
     }
 
-    stopService (name) {
+    async stopService (name) {
+        const service = this.services[name]
+        if (service) {
+            if (!service.path) await this._updatePath(name)
+            await bus.request(`path``service.stopService`, name)
+        }
     }
 
     //registerService (name, host, path) {
