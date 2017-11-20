@@ -6,7 +6,8 @@ import rpc from './rpc'
 import imageProxy from './imageProxy'
 import {createServer} from './letsencrypt'
 import './settings'
-import './serviceManager'
+import {LocalServiceManager} from './localServiceManager'
+import {ServiceManager} from './serviceManager'
 
 const
     fs = require('fs'),
@@ -57,5 +58,20 @@ export function start () {
             }
         })
 }
+
+Config.started
+    .then(config => {
+        new LocalServiceManager(Config.host.services, config.configs)
+        if (bus.root) {
+            const services = config.hosts
+                .reduce((a, {name: host, services}) => (
+                    services && a.push(...services.map(
+                        ({name, enabled = true}) => ({name, host, enabled})
+                    )), a
+                ), [])
+                .reduce((o, s) => (o[s.name] = s, o), {})
+            bus.registerObject('Service', new ServiceManager(services))
+        }
+    })
 
 export {createSession} from './session'
