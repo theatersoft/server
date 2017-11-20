@@ -4,7 +4,6 @@ import {Config} from './config'
 export class ServiceManager {
     constructor (services) {
         this.services = services
-        Object.keys(services).forEach(this._updatePath)
     }
 
     _updatePath = name =>
