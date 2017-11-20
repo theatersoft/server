@@ -69,7 +69,7 @@ class ServiceManager {
         const service = this.services[name]
         if (service) {
             if (!service.path) await this._updatePath(name)
-            await bus.request(`path``service.startService`, name)
+            await bus.request(`${service.path}service.startService`, name)
         }
     }
 
@@ -77,7 +77,7 @@ class ServiceManager {
         const service = this.services[name]
         if (service) {
             if (!service.path) await this._updatePath(name)
-            await bus.request(`path``service.stopService`, name)
+            await bus.request(`${service.path}service.stopService`, name)
         }
     }
 
