@@ -1,10 +1,8 @@
 import {bus, proxy, log, error, debug} from '@theatersoft/bus'
 
 export class LocalServiceManager {
-    constructor (services = [], configs = {}) {
-        this.services = services.reduce((o, options) => (o[options.name] = {
-            options: {config: {...options.config, ...configs[options.name]}, ...options}
-        }, o), {})
+    constructor (services) {
+        this.services = services
         Object.values(this.services)
             .forEach(({options}) => options.enabled !== false && this.startService(options.name))
         bus.registerObject('service', this)

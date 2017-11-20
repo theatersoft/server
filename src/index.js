@@ -54,24 +54,29 @@ export function start () {
                 log('Listening on port ' + port)
             }
             catch (e) {
-                error ('Failed to start web server', e)
+                error('Failed to start web server', e)
             }
         })
 }
 
 Config.started
     .then(config => {
-        new LocalServiceManager(Config.host.services, config.configs)
         if (bus.root) {
-            const services = config.hosts
+            bus.registerObject('Service', new ServiceManager(config.hosts
                 .reduce((a, {name: host, services}) => (
                     services && a.push(...services.map(
                         ({name, enabled = true}) => ({name, host, enabled})
                     )), a
                 ), [])
                 .reduce((o, s) => (o[s.name] = s, o), {})
-            bus.registerObject('Service', new ServiceManager(services))
+            ))
         }
+        new LocalServiceManager(
+            Config.host.services ? Config.host.services
+                .reduce((o, options) => (o[options.name] = {
+                    options: {config: {...options.config, ...config.configs[options.name]}, ...options}
+                }, o), {}) : []
+        )
     })
 
 export {createSession} from './session'
