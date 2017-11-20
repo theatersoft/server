@@ -69,9 +69,10 @@ Config.started
                     )), a
                 ), [])
                 .reduce((o, s) => (o[s.name] = s, o), {})
-            ))
+            ), undefined, {sender: true})
         }
         new LocalServiceManager(
+            Config.hostname,
             Config.host.services ? Config.host.services
                 .reduce((o, options) => (o[options.name] = {
                     options: {config: {...options.config, ...config.configs[options.name]}, ...options}

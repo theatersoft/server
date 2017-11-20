@@ -3,15 +3,15 @@ import {Config} from './config'
 
 export class ServiceManager {
     constructor (services) {
-        this.services = services
+        this.state = {services, hosts: {}}
     }
 
     _updatePath = name =>
         bus.resolveName(name)
             .then(path => this.services[name].path = path)
 
-    getServices (name) {
-        return name ? this.services[name] : this.services
+    getState () {
+        return this.state
     }
 
     async startService (name) {
@@ -34,7 +34,18 @@ export class ServiceManager {
         }
     }
 
-    //registerService (name, host, path) {
-    //
-    //}
+    registerHost (host, path) {
+        debug('@@@ registerHost', host, path)
+        this.state = {
+            ...this.state,
+            hosts: {
+                ...this.state.hosts,
+                [host]: {...this.state.hosts[host], path}
+            }
+        }
+    }
+
+    setService ({name, host, running}, path) {
+        debug('@@@ registerService', name, host, path)
+    }
 }
