@@ -1,5 +1,8 @@
 import {bus, proxy, log, error, debug} from '@theatersoft/bus'
 import {Config} from './config'
+import {createStore, applyMiddleware} from 'redux'
+import thunk from 'redux-thunk'
+import {composeWithDevTools} from 'remote-redux-devtools'
 
 export class ServiceManager {
     constructor (services) {

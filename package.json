@@ -37,6 +37,9 @@
       "greenlock": "^2.1.12",
       "le-challenge-fs": "^2.0.8",
       "le-store-certbot": "^2.0.3",
+      "redux": "^3.6.0",
+      "redux-thunk": "^2.1.0",
+      "remote-redux-devtools": "^0.5.7",
       "web-push": "^3.2.2"
     },
     "devDependencies": {},
