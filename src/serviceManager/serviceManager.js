@@ -14,15 +14,11 @@ export class ServiceManager {
             (applyMiddleware(thunk.withExtraArgument({manager: this}))))
     }
 
-    //_updatePath = name =>
-    //    bus.resolveName(name)
-    //        .then(path => this.services[name].path = path)
-
     getState () {return this.store.getState()}
 
     setHost (host, path) {this.store.dispatch(hostSet({...host, path}))}
 
-    setService (service) {this.store.dispatch(serviceSet(service))}
+    setService (service, path) {this.store.dispatch(serviceSet({...service, path}))}
 
     dispatch (action) {return this.store.dispatch(api(action))}
 
