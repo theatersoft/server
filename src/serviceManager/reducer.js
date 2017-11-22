@@ -4,22 +4,22 @@ export default function reducer (state, action) {
     switch (action.type) {
     case HOST_SET:
     {
-        const {host} = action, {name} = host
+        const {host} = action, {id} = host
         return {
             ...state, hosts: {
-                ...state.hosts, [name]: {
-                    ...state.hosts[name], ...host
+                ...state.hosts, [id]: {
+                    ...state.hosts[id], ...host
                 }
             }
         }
     }
     case SERVICE_SET:
     {
-        const {service} = action, {name} = service
+        const {service} = action, {id} = service
         return {
             ...state, services: {
-                ...state.services, [name]: {
-                    ...state.services[name], ...service
+                ...state.services, [id]: {
+                    ...state.services[id], ...service
                 }
             }
         }

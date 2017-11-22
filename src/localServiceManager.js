@@ -7,7 +7,7 @@ export class LocalServiceManager {
         Object.values(this.services)
             .forEach(({options}) => options.enabled !== false && this.startService(options.name))
         bus.registerObject('service', this)
-        bus.request(`/Service.setHost`, {name})
+        bus.request(`/Service.setHost`, name)
     }
 
     getServiceState (name) {
@@ -26,7 +26,7 @@ export class LocalServiceManager {
             log(`Starting service ${options.name}`)
             service.instance.start(options)
                 .then(() => log(`Started service ${name}`))
-                .then(() => {bus.request(`/Service.setService`, {name, value: true})})
+                .then(() => {bus.request(`/Service.setService`, name, true)})
                 .catch(e => {
                     delete service.instance
                     error(`Failed to start service ${name} ${e}`)
@@ -43,7 +43,7 @@ export class LocalServiceManager {
         log(`Stopping service ${options.name}`)
         service.instance.stop()
         delete service.instance
-        bus.request(`/Service.setService`, {name, value: false})
+        bus.request(`/Service.setService`, name, false)
         log(`Stopped service ${name}`)
     }
 }

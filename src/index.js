@@ -66,10 +66,10 @@ Config.started
             bus.registerObject('Service', new ServiceManager(config.hosts
                 .reduce((a, {name: host, services}) => (
                     services && a.push(...services.map(
-                        ({name, enabled = true}) => ({name, host, enabled})
+                        ({name, enabled = true}) => ({id: name, host, enabled})
                     )), a
                 ), [])
-                .reduce((o, s) => (o[s.name] = s, o), {})
+                .reduce((o, s) => (o[s.id] = s, o), {})
             ), undefined, {sender: true})
         }
         new LocalServiceManager(
