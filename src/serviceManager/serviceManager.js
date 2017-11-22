@@ -3,10 +3,15 @@ import {Config} from '../config'
 import {createStore, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
 import {composeWithDevTools} from 'remote-redux-devtools'
+import {hostSet} from './actions'
+import reducer from "./reducer"
 
 export class ServiceManager {
     constructor (services) {
         this.state = {services, hosts: {}}
+        this.store = createStore(reducer, {services, hosts: {}},
+            (true && composeWithDevTools({name: 'ZWave', realtime: true, port: 6400, hostname: 'localhost'}) || (x => x))
+            (applyMiddleware(thunk.withExtraArgument({}))))
     }
 
     _updatePath = name =>
@@ -14,7 +19,7 @@ export class ServiceManager {
             .then(path => this.services[name].path = path)
 
     getState () {
-        return this.state
+        return this.store.getState()
     }
 
     async startService (name) {
@@ -39,13 +44,14 @@ export class ServiceManager {
 
     registerHost (host, path) {
         debug('@@@ registerHost', host, path)
-        this.state = {
-            ...this.state,
-            hosts: {
-                ...this.state.hosts,
-                [host]: {...this.state.hosts[host], path}
-            }
-        }
+        this.store.dispatch(hostSet(host, path))
+        //this.state = {
+        //    ...this.state,
+        //    hosts: {
+        //        ...this.state.hosts,
+        //        [host]: {...this.state.hosts[host], path}
+        //    }
+        //}
     }
 
     setService ({name, host, running}, path) {
