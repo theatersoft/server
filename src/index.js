@@ -34,11 +34,12 @@ export function start () {
             const
                 https = require('https'),
                 express = require('express'),
+                cookieParser = require('cookie-parser'),
                 app = express()
             try {
                 web(express, app)
                 app.set('json replacer', (key, value) => typeof value === 'function' ? '()' : value)
-                app.use(express.cookieParser())
+                app.use(cookieParser())
                 app.get('/theatersoft/rpc', rpc.get)
                 app.post('/theatersoft/rpc', (req, res, next) => {
                     req.headers['content-type'] = 'application/json';
