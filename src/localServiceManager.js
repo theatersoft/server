@@ -43,7 +43,7 @@ export class LocalServiceManager {
         log(`Stopping service ${options.name}`)
         service.instance.stop()
         delete service.instance
-        bus.request(`/Service.setService`, {name, value: true})
+        bus.request(`/Service.setService`, {name, value: false})
         log(`Stopped service ${name}`)
     }
 }
