@@ -20,7 +20,7 @@ export class ServiceManager {
 
     getState () {return this.store.getState()}
 
-    setHost (host) {this.store.dispatch(hostSet(host))}
+    setHost (host, path) {this.store.dispatch(hostSet({...host, path}))}
 
     setService (service) {this.store.dispatch(serviceSet(service))}
 

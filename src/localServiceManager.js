@@ -1,13 +1,13 @@
 import {bus, proxy, log, error, debug} from '@theatersoft/bus'
 
 export class LocalServiceManager {
-    constructor (host, services) {
-        this.host = host
+    constructor (name, services) {
+        this.name = name
         this.services = services
         Object.values(this.services)
             .forEach(({options}) => options.enabled !== false && this.startService(options.name))
         bus.registerObject('service', this)
-        bus.request(`/Service.registerHost`, host)
+        bus.request(`/Service.setHost`, {name})
     }
 
     getServiceState (name) {
