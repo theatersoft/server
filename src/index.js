@@ -66,7 +66,7 @@ Config.started
             new ServiceManager(config.hosts
                 .reduce((a, {name: host, services}) => (
                     services && a.push(...services.map(
-                        ({name, enabled = true}) => ({id: name, host, enabled})
+                        ({name, enabled = true, ...props}) => ({...props, id: name, host, enabled})
                     )), a
                 ), [])
                 .reduce((o, s) => (o[s.id] = s, o), {})
