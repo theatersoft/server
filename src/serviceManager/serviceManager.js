@@ -14,6 +14,11 @@ export class ServiceManager {
             (applyMiddleware(thunk.withExtraArgument({manager: this}))))
     }
 
+    servicePath = name => {
+        const {services: {[name]: service}, hosts} = this.store.getState()
+        return (service || hosts[service.host]).path
+    }
+
     getState () {return this.store.getState()}
 
     setHost (id, path) {this.store.dispatch(hostSet({id, path}))}
@@ -22,19 +27,11 @@ export class ServiceManager {
 
     dispatch (action) {return this.store.dispatch(api(action))}
 
-    async startService (name) {
-        const {services: {[name]: service}} = this.store.getState()
-        if (!service) throw 'unknown service'
-        if (service.path) {
-            await bus.request(`${service.path}service.startService`, name)
-        }
+    startService (name) {
+        return bus.request(`${this.servicePath(name)}service.startService`, name)
     }
 
-    async stopService (name) {
-        const {services: {[name]: service}} = this.store.getState()
-        if (!service) throw 'unknown service'
-        if (service.path) {
-            await bus.request(`${service.path}service.stopService`, name)
-        }
+    stopService (name) {
+        return bus.request(`${this.servicePath(name)}service.stopService`, name)
     }
 }
