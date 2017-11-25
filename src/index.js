@@ -76,7 +76,7 @@ Config.started
             Config.hostname,
             Config.host.services ? Config.host.services
                 .reduce((o, options) => (o[options.name] = {
-                    options: {config: {...options.config, ...config.configs[options.name]}, ...options}
+                    options: {...options, config: {...options.config, ...config.configs[options.name]}}
                 }, o), {}) : []
         )
     })
