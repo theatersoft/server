@@ -1,3 +1,7 @@
+import {switchActions} from '@theatersoft/device'
+const
+    {ON, OFF} = switchActions
+
 export const
     HOST_SET = 'HOST_SET',
     hostSet = host => ({type: HOST_SET, host}),
@@ -5,12 +9,12 @@ export const
     serviceSet = service => ({type: SERVICE_SET, service}),
 
     api = action => (dispatch, getState, {manager}) => {
-        const
-            {id, type} = action
+        const {id, type} = action
         switch (type) {
         case ON:
+            return manager.startService(id)
         case OFF:
-            return manager[type === ON ? startService : stopService](id)
+            return manager.stopService(id)
         }
         throw 'unknown action '
     }

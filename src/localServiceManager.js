@@ -23,10 +23,12 @@ export class LocalServiceManager {
         try {
             const {options} = service
             service.instance = new (require(options.module)[options.export])()
-            log(`Starting service ${options.name}`)
+            log(`Starting service ${name}`)
             service.instance.start(options)
-                .then(() => log(`Started service ${name}`))
-                .then(() => {bus.request(`/Service.setService`, name, true)})
+                .then(() => {
+                    log(`Started service ${name}`)
+                    bus.request(`/Service.setService`, name, true)
+                })
                 .catch(e => {
                     delete service.instance
                     error(`Failed to start service ${name} ${e}`)
@@ -40,7 +42,7 @@ export class LocalServiceManager {
         const service = this.services[name]
         if (!service) throw `Failed to start service ${name}`
         if (!service.instance) throw`Service not running ${name}`
-        log(`Stopping service ${options.name}`)
+        log(`Stopping service ${name}`)
         service.instance.stop()
         delete service.instance
         bus.request(`/Service.setService`, name, false)
