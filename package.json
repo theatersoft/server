@@ -23,7 +23,7 @@
     "build:dist": "DIST=true npm run build",
     "build:watch": "DEBUG=true node build.js watch",
     "debug-build": "node --inspect-brk=9966 build",
-    "link": "npm link @theatersoft/bus @theatersoft/device",
+    "link": "npm link --no-package-lock @theatersoft/bus @theatersoft/device",
     "publish": "node build.js publish",
     "remotedev": "remotedev --hostname=0.0.0.0 --port=6400"
   },
@@ -49,7 +49,7 @@
     },
     "scripts": {
       "BUS": "env $(cat /opt/theatersoft/.config/theatersoft/.bus | xargs)",
-      "link": "npm link; npm link @theatersoft/server @theatersoft/client @theatersoft/automation @theatersoft/bus @theatersoft/device @theatersoft/serial @theatersoft/x10 @theatersoft/zwave",
+      "link": "npm link --no-package-lock; npm link --no-package-lock @theatersoft/server @theatersoft/bus @theatersoft/client @theatersoft/automation @theatersoft/device @theatersoft/serial @theatersoft/x10 @theatersoft/zwave",
       "start": "PORT=443 authbind node start.js",
       "start-opt": "XDG_CONFIG_HOME=/opt/theatersoft/.config PORT=443 authbind node start.js",
       "start-child": "npm run BUS -- node start.js",
