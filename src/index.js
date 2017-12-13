@@ -62,22 +62,21 @@ export function start () {
 
 Config.started
     .then(config => {
-        if (bus.root) {
-            new ServiceManager(config.hosts
+        if (bus.root) new ServiceManager(
+            config.hosts
                 .reduce((a, {name: host, services}) => (
                     services && a.push(...services.map(
                         ({name, enabled = true, ...props}) => ({...props, id: name, host, enabled})
                     )), a
                 ), [])
                 .reduce((o, s) => (o[s.id] = s, o), {})
-            )
-        }
-        new LocalServiceManager(
+        )
+        if (Config.host.services) new LocalServiceManager(
             Config.hostname,
-            Config.host.services ? Config.host.services
+            Config.host.services
                 .reduce((o, options) => (o[options.name] = {
                     options: {...options, config: {...options.config, ...config.configs[options.name]}}
-                }, o), {}) : []
+                }, o), {})
         )
     })
 
