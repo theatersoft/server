@@ -40,11 +40,14 @@ const
     nodeResolve = require('rollup-plugin-node-resolve')({jsnext: true})
 
 const targets = {
-    async node (src, dst) {
+    async node (src, dst, format = 'cjs') {
         console.log('target node')
         exec('mkdir -p dist')
+        const
+            es = format === 'es' ? '.es' : '',
+            dest = `dist/${dst}${es}.js`
         await (await rollup.rollup({
-                entry: `${src}/index.js`,
+                entry: `${src}/index${es}.js`,
                 external: [
                     'util', 'fs', 'path', 'http', 'net', 'child_process', 'url',
                     ...Object.keys(pkg.dist.dependencies)
@@ -55,13 +58,13 @@ const targets = {
                 ]
             }))
             .write({
-                dest: `dist/${dst}.js`,
-                format: 'cjs',
+                dest,
+                format,
                 moduleName: path.basename(dst),
                 banner: copyright,
                 sourceMap: DIST ? false : 'inline'
             })
-        console.log(`wrote dist/${dst}.js`)
+        console.log(`wrote ${dest}`)
     },
 
     package () {
@@ -89,6 +92,7 @@ const targets = {
 
     async all () {
         await targets.node('src', 'index')
+        await targets.node('src', 'index', 'es')
         await targets.node('src/capture', 'capture/capture')
         targets.package()
     }
