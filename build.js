@@ -47,7 +47,7 @@ const targets = {
             es = format === 'es' ? '.es' : '',
             dest = `dist/${dst}${es}.js`
         await (await rollup.rollup({
-                entry: `${src}/index${es}.js`,
+                entry: `${src}/index.js`,
                 external: [
                     'util', 'fs', 'path', 'http', 'net', 'child_process', 'url',
                     ...Object.keys(pkg.dist.dependencies)
@@ -92,7 +92,7 @@ const targets = {
 
     async all () {
         await targets.node('src', 'index')
-        await targets.node('src', 'index', 'es')
+        await targets.node('src/localServiceManager', 'localServiceManager')
         await targets.node('src/capture', 'capture/capture')
         targets.package()
     }
