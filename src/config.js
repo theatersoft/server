@@ -65,4 +65,12 @@ export class Config {
         log('bus Config.getHost')
         return host
     }
+
+    getServiceOptions (name) {
+        const options = hosts
+                .find(({name: n}) => n === hostname).services
+                .find(({name:n }) => n === name)
+            || {name}
+        return Object.assign(options.config, _config.configs[name])
+    }
 }
