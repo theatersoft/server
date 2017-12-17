@@ -6,7 +6,7 @@ import rpc from './rpc'
 import imageProxy from './imageProxy'
 import {createServer} from './letsencrypt'
 import './settings'
-import {LocalServiceManager} from './localServiceManager'
+import {LocalServiceManager} from './lib'
 import {ServiceManager} from './serviceManager'
 
 const

@@ -92,7 +92,7 @@ const targets = {
 
     async all () {
         await targets.node('src', 'index')
-        await targets.node('src/localServiceManager', 'localServiceManager')
+        await targets.node('src/lib', 'lib')
         await targets.node('src/capture', 'capture/capture')
         targets.package()
     }

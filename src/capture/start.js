@@ -1,17 +1,16 @@
 'use strict'
 const
     {bus} = require('@theatersoft/bus'),
-    {LocalServiceManager} = require('@theatersoft/server/localServiceManager'),
+    {LocalServiceManager} = require('@theatersoft/server/lib'),
+    name = `capture.${require('os').hostname()}`,
     options = {
         module: '@theatersoft/server/capture/capture',
         export: 'Capture',
-        name: 'capture'
-    },
-    service = new (require(options.module)[options.export])()
-
+        name
+    }
 bus.start().then(() => new LocalServiceManager(
-    options.name,
-    {[options.name]: {options}}
+    name,
+    {[name]: {options}}
 ))
 process.on('SIGINT', () => process.exit())
 process.on('exit', () => service.stop())
