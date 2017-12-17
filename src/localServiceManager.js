@@ -49,4 +49,3 @@ export class LocalServiceManager {
         log(`Stopped service ${name}`)
     }
 }
-
