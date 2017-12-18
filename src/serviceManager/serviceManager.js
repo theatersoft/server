@@ -13,7 +13,10 @@ export class ServiceManager {
             (true && composeWithDevTools({name: 'Service', realtime: true, port: 6400, hostname: 'localhost'}) || (x => x))
             (applyMiddleware(thunk.withExtraArgument({manager: this}))))
         bus.registerObject('Service', this, undefined, {sender: true})
-            .then(obj => this.store.subscribe(() => obj.signal('state', this.store.getState())))
+            .then(obj => {
+                obj.signal('start')
+                this.store.subscribe(() => obj.signal('state', this.store.getState()))
+            })
     }
 
     servicePath = name => {
