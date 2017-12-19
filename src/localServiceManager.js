@@ -17,17 +17,19 @@ export class LocalServiceManager {
     }
 
     startService (name) {
-        const service = this.services[name]
-        if (!service) throw `Failed to start service ${name}`
-        if (service.instance) throw`Service already running ${name}`
         try {
+            const service = this.services[name]
+            if (service.instance) {
+                log(`Service already running ${name}`)
+                return
+            }
             const {options} = service
             service.instance = new (require(options.module)[options.export])()
             log(`Starting service ${name}`)
-            service.instance.start(options)
+            return service.instance.start(options)
                 .then(() => {
-                    log(`Started service ${name}`)
                     bus.request(`/Service.setService`, name, true)
+                    log(`Started service ${name}`)
                 })
                 .catch(e => {
                     delete service.instance
@@ -39,13 +41,21 @@ export class LocalServiceManager {
     }
 
     stopService (name) {
-        const service = this.services[name]
-        if (!service) throw `Failed to start service ${name}`
-        if (!service.instance) throw`Service not running ${name}`
-        log(`Stopping service ${name}`)
-        service.instance.stop()
-        delete service.instance
-        bus.request(`/Service.setService`, name, false)
-        log(`Stopped service ${name}`)
+        try {
+            const service = this.services[name]
+            if (!service.instance) {
+                log(`Service not running ${name}`)
+                return
+            }
+            log(`Stopping service ${name}`)
+            return service.instance.stop()
+                .then(() => {
+                    delete service.instance
+                    bus.request(`/Service.setService`, name, false)
+                    log(`Stopped service ${name}`)
+                })
+        } catch (e) {
+            error(`Failed to stop service ${name} ${e}`)
+        }
     }
 }
