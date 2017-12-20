@@ -3,13 +3,13 @@ import {Config} from '../config'
 import {createStore, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
 import {composeWithDevTools} from 'remote-redux-devtools'
-import {hostSet, serviceSet, api} from './actions'
+import {serviceSet, api} from './actions'
 import reducer from "./reducer"
 
 export class ServiceManager {
     constructor (services) {
-        this.state = {services, hosts: {}}
-        this.store = createStore(reducer, {services, hosts: {}},
+        this.state = {services}
+        this.store = createStore(reducer, {services},
             (true && composeWithDevTools({name: 'Service', realtime: true, port: 6400, hostname: 'localhost'}) || (x => x))
             (applyMiddleware(thunk.withExtraArgument({manager: this}))))
         bus.registerObject('Service', this, undefined, {sender: true})
@@ -19,14 +19,9 @@ export class ServiceManager {
             })
     }
 
-    servicePath = name => {
-        const {services: {[name]: service}, hosts} = this.store.getState()
-        return (service || hosts[service.host]).path
-    }
+    servicePath = name => this.store.getState().services[name].path
 
     getState () {return this.store.getState()}
-
-    setHost (id, path) {this.store.dispatch(hostSet({id, path}))}
 
     setService (id, value, path) {this.store.dispatch(serviceSet({id, value, path}))}
 

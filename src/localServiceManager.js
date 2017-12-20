@@ -7,7 +7,6 @@ export class LocalServiceManager {
         Object.values(this.services)
             .forEach(({options}) => options.enabled !== false && this.startService(options.name))
         bus.registerObject('service', this)
-        bus.request(`/Service.setHost`, name)
     }
 
     getServiceState (name) {

@@ -3,8 +3,6 @@ const
     {ON, OFF} = switchActions
 
 export const
-    HOST_SET = 'HOST_SET',
-    hostSet = host => ({type: HOST_SET, host}),
     SERVICE_SET = 'SERVICE_SET',
     serviceSet = service => ({type: SERVICE_SET, service}),
 
