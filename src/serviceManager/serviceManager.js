@@ -21,11 +21,19 @@ export class ServiceManager {
 
     servicePath = name => this.store.getState().services[name].path
 
+    dispatch (action) {return this.store.dispatch(api(action))}
+
     getState () {return this.store.getState()}
 
-    setService (id, value, path) {this.store.dispatch(serviceSet({id, value, path}))}
+    registerService (id, value, path) {
+        debug('registerService', {id, value, path})
+        this.store.dispatch(serviceSet({id, value, path}))
+    }
 
-    dispatch (action) {return this.store.dispatch(api(action))}
+    setService (id, value) {
+        debug('serviceSet', {id, value})
+        this.store.dispatch(serviceSet({id, value}))
+    }
 
     startService (name) {
         return bus.request(`${this.servicePath(name)}service.startService`, name)

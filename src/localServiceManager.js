@@ -27,7 +27,7 @@ export class LocalServiceManager {
             log(`Starting service ${name}`)
             return service.instance.start(options)
                 .then(() => {
-                    bus.request(`/Service.setService`, name, true)
+                    bus.request(`/Service.registerService`, name, true)
                     log(`Started service ${name}`)
                 })
                 .catch(e => {
