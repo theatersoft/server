@@ -4,9 +4,16 @@ export class LocalServiceManager {
     constructor (name, services) {
         this.name = name
         this.services = services
-        Object.values(this.services)
-            .forEach(({options}) => options.enabled !== false && this.startService(options.name))
         bus.registerObject('service', this)
+        const register = () =>
+            bus.request('/Service.registerServices', Object.values(this.services).map(s => s.options.name))
+        bus.registerListener('Service.start', register)
+        bus.on('reconnect', register)
+        register()
+        Object.values(this.services)
+            .forEach(({options}) => {
+                options.enabled !== false && this.startService(options.name)
+            })
     }
 
     getServiceState (name) {
@@ -27,7 +34,7 @@ export class LocalServiceManager {
             log(`Starting service ${name}`)
             return service.instance.start(options)
                 .then(() => {
-                    bus.request(`/Service.registerService`, name, true)
+                    bus.request('/Service.setService', name, true)
                     log(`Started service ${name}`)
                 })
                 .catch(e => {

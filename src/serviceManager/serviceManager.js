@@ -25,9 +25,9 @@ export class ServiceManager {
 
     getState () {return this.store.getState()}
 
-    registerService (id, value, path) {
-        debug('registerService', {id, value, path})
-        this.store.dispatch(serviceSet({id, value, path}))
+    registerServices (ids, path) {
+        debug('registerService', {ids, path})
+        ids.forEach(id => this.store.dispatch(serviceSet({id, path})))
     }
 
     setService (id, value) {
