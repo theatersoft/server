@@ -3,7 +3,7 @@ export {LocalServiceManager}
 
 import {bus, setTime, setTag} from '@theatersoft/bus'
 
-export function startLocalService (service) {
+export function startLocalService (service, enabled = true) {
     bus.start()
         .then(async () => {
             const options = service instanceof Object
@@ -12,6 +12,7 @@ export function startLocalService (service) {
             const {name} = options
             setTime(true)
             setTag(name)
+            options.enabled = enabled
             const lsm = new LocalServiceManager(name, {[name]: {options}})
             process
                 .on('SIGINT', () => process.exit())
