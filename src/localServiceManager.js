@@ -27,6 +27,7 @@ export class LocalServiceManager {
             const service = this.services[name]
             if (service.instance) {
                 log(`Service already running ${name}`)
+                bus.request('/Service.setService', name, true) //TODO temp
                 return
             }
             const {options} = service
@@ -51,6 +52,7 @@ export class LocalServiceManager {
             const service = this.services[name]
             if (!service.instance) {
                 log(`Service not running ${name}`)
+                bus.request(`/Service.setService`, name, false) //TODO temp
                 return
             }
             log(`Stopping service ${name}`)
