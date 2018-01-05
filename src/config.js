@@ -66,11 +66,11 @@ export class Config {
         return host
     }
 
-    getServiceOptions (name) {
-        const options = hosts[hostname].services
+    getService (name) {
+        const service = hosts[hostname].services
                 .find(({name:n }) => n === name)
             || {name}
-        Object.assign(options.config, _config.configs[name])
-        return options
+        Object.assign(service.config, _config.configs[name])
+        return service
     }
 }

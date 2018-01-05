@@ -4,42 +4,36 @@ export class LocalServiceManager {
     constructor (name, services) {
         this.name = name
         this.services = services
+        this.instances = {}
         bus.registerObject('service', this)
         const register = () =>
-            bus.request('/Service.registerServices', Object.values(this.services).map(s => s.options.name))
+            bus.request('/Service.setServices', this.services)
         bus.registerListener('Service.start', register)
         bus.on('reconnect', register)
         register()
         Object.values(this.services)
-            .forEach(({options}) => {
-                options.enabled !== false && this.startService(options.name)
-            })
-    }
-
-    getServiceState (name) {
-        const service = this.services[name]
-        if (!service) throw `Unknown service ${name}`
-        return !!service.instance
+            .forEach(service =>
+                service.enabled !== false && this.startService(service.name)
+            )
     }
 
     startService (name) {
         try {
             const service = this.services[name]
-            if (service.instance) {
+            if (this.instances[name]) {
                 log(`Service already running ${name}`)
-                bus.request('/Service.setService', name, true) //TODO temp
                 return
             }
-            const {options} = service
-            service.instance = new (require(options.module)[options.export])()
+            this.instances[name] = new (require(service.module)[service.export])()
             log(`Starting service ${name}`)
-            return service.instance.start(options)
+            return this.instances[name].start(service)
                 .then(() => {
-                    bus.request('/Service.setService', name, true)
+                    this.services[name].value = true
+                    bus.request('/Service.setServices', {[name]: {value: true}})
                     log(`Started service ${name}`)
                 })
                 .catch(e => {
-                    delete service.instance
+                    delete this.instances[name]
                     error(`Failed to start service ${name} ${e}`)
                 })
         } catch (e) {
@@ -49,17 +43,16 @@ export class LocalServiceManager {
 
     stopService (name) {
         try {
-            const service = this.services[name]
-            if (!service.instance) {
+            if (!this.instances[name]) {
                 log(`Service not running ${name}`)
-                bus.request(`/Service.setService`, name, false) //TODO temp
                 return
             }
             log(`Stopping service ${name}`)
-            return service.instance.stop()
+            return this.instances[name].stop()
                 .then(() => {
-                    delete service.instance
-                    bus.request(`/Service.setService`, name, false)
+                    delete this.instances[name]
+                    this.services[name].value = false
+                    bus.request('/Service.setServices', {[name]: {value: false}})
                     log(`Stopped service ${name}`)
                 })
         } catch (e) {
