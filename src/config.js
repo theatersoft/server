@@ -1,10 +1,10 @@
 import {bus, executor, proxy, log} from '@theatersoft/bus'
+import os from 'os'
+import fs from 'fs'
 
 export const THEATERSOFT_CONFIG_HOME = `${process.env.XDG_CONFIG_HOME || `${process.env.HOME}/.config`}/theatersoft`
 
 const
-    fs = require('fs'),
-    os = require('os'),
     read = () => JSON.parse(fs.readFileSync(`${THEATERSOFT_CONFIG_HOME}/config.json`, 'utf8')),
     started = executor(),
     cameras = {},
