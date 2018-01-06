@@ -1,3 +1,4 @@
+import os from 'os'
 import {LocalServiceManager} from  '../localServiceManager'
 export {LocalServiceManager}
 
@@ -9,7 +10,7 @@ export function startLocalService (_service, enabled = true) {
         .then(async () => {
             const service = _service instanceof Object
                 ? _service
-                : await bus.proxy('Config').getService(_service)
+                : await bus.proxy('Config').getLocalService(_service, os.hostname())
             const {name} = service
             service.enabled = enabled
             const lsm = new LocalServiceManager(name, {[name]: service})

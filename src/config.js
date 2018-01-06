@@ -66,9 +66,9 @@ export class Config {
         return host
     }
 
-    getService (name) {
+    getLocalService (name, hostname) {
         const service = hosts[hostname].services
-                .find(({name:n }) => n === name)
+                .find(({name: n}) => n === name)
             || {name}
         Object.assign(service.config, _config.configs[name])
         return service
