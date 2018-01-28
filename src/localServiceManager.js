@@ -1,9 +1,11 @@
 import {bus, proxy, log, error, debug} from '@theatersoft/bus'
+import os from 'os'
+const host = os.hostname()
 
 export class LocalServiceManager {
     constructor (name, services) {
         this.name = name
-        this.services = services
+        this.services = Object.entries(services).reduce((o, [k, v]) => (o[k] = {...v, host}, o), {})
         this.instances = {}
         bus.registerObject('service', this)
         const register = () =>
@@ -29,7 +31,7 @@ export class LocalServiceManager {
             return this.instances[name].start(service)
                 .then(() => {
                     this.services[name].value = true
-                    bus.request('/Service.setServices', {[name]: {value: true}})
+                    bus.request('/Service.setServices', {[name]: {value: true}, host})
                     log(`Started service ${name}`)
                 })
                 .catch(e => {
