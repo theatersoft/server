@@ -40,7 +40,7 @@
       "le-store-certbot": "^2.0.3",
       "redux": "^3.6.0",
       "redux-thunk": "^2.1.0",
-      "remote-redux-devtools": "^0.5.7",
+      "remote-redux-devtools": "^0.5.12",
       "web-push": "^3.2.2"
     },
     "devDependencies": {},
@@ -79,7 +79,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.22.0",
     "babel-preset-babili": "0.0.8",
     "chokidar": "^1.7.0",
-    "remotedev-server": "^0.3.0-beta-2",
+    "remotedev-server": "^0.2.4",
     "rollup": "^0.42.0",
     "rollup-plugin-alias": "^1.2.0",
     "rollup-plugin-babel": "^2.7.1",
