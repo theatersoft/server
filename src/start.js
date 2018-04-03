@@ -1,2 +1,3 @@
 process.on('unhandledRejection', e => console.log(e))
-require('./index').start()
+const argv = require('minimist')(process.argv.slice(2))
+require('./index').start(argv)

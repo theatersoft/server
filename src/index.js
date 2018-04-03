@@ -1,4 +1,4 @@
-import {bus, executor, log, error, setTag} from '@theatersoft/bus'
+import {bus, executor, log, error, setTag, setTime} from '@theatersoft/bus'
 import {check} from './session'
 import {Config, THEATERSOFT_CONFIG_HOME} from './config'
 import web from './web'
@@ -19,8 +19,9 @@ const
     server = executor(),
     children = port && {server: server.promise, check}
 
-export function start () {
+export function start ({time = false}) {
     setTag('Theatersoft')
+    setTime(time)
     log({parent, children})
 
     bus.start({parent, children})
