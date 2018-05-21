@@ -93,6 +93,7 @@ const targets = {
     async all () {
         await targets.node('src', 'index')
         await targets.node('src/lib', 'lib')
+        await targets.node('src/lib', 'lib', 'es')
         await targets.node('src/capture', 'capture/index')
         targets.package()
     }
