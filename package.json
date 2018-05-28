@@ -35,9 +35,9 @@
       "nedb": "~0.10.5",
       "redirect-https": "^1.1.1",
       "request": "~2.65.0",
-      "greenlock": "^2.1.12",
+      "greenlock": "^2.2.19",
       "le-challenge-fs": "^2.0.8",
-      "le-store-certbot": "^2.0.3",
+      "le-store-certbot": "^2.1.2",
       "minimist": "^1.2.0",
       "redux": "^3.6.0",
       "redux-thunk": "^2.1.0",
@@ -90,5 +90,8 @@
     "rollup-plugin-sourcemaps": "^0.4.1",
     "shelljs": "^0.7.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "le-challenge-fs": "^2.0.8",
+    "le-store-certbot": "^2.1.2"
+  }
 }
