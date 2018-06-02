@@ -1,5 +1,4 @@
-import imagePipeline from './imagePipeline'
-import {proxy} from '@theatersoft/bus'
+import {Pipeline} from './imagePipeline'
 
 const pipelines = []
 
@@ -10,14 +9,12 @@ process.on('exit', () => {
 })
 
 export class Capture {
-    start () {
-        return proxy('Config').getHost()
-            .then(host =>
-                host.cameras.forEach(cam =>
-                    cam.pipe = imagePipeline.create(cam.device)))
+    async start ({config: {cameras, port = 5400}}) {
+        cameras.forEach(cam =>
+            cam.pipe = new Pipeline(cam.device, port))
     }
 
-    stop () {
+    async stop () {
         pipelines.forEach(pipe =>
             pipe.destroy())
     }

@@ -6,10 +6,10 @@ import http from 'http'
 import net from 'net'
 import child from 'child_process'
 
-function Pipeline (device) {
+export function Pipeline (device, base) {
     var
         app = express(),
-        port = 5400 + Number(device),
+        port = base + Number(device),
         tcpPort = port - 100,
         client,
         server,
@@ -121,10 +121,4 @@ function Pipeline (device) {
         connectTcp()
         createHttp()
     })
-}
-
-export default {
-    create (device) {
-        return new Pipeline(device)
-    }
 }

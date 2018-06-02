@@ -29,13 +29,6 @@ bus.started()
                     }
                 })
 
-                // camera map
-                _config.hosts.forEach(h => {
-                    h.cameras && h.cameras.forEach(cam => {
-                        cam.host = h.name
-                        cameras[cam.name] = cam
-                    })
-                })
                 started.resolve(_config)
                 bus.root && bus.registerObject('Config', new Config())
             })
@@ -66,11 +59,15 @@ export class Config {
         return host
     }
 
-    getLocalService (name, hostname) {
-        const service = hosts[hostname].services
+    static _getLocalService (name, hostname, init = true) {
+        const service = (hosts[hostname].services || [])
                 .find(({name: n}) => n === name)
-            || {name}
-        Object.assign(service.config, _config.configs[name])
+            || init && {name}
+        if (service) Object.assign(service.config, _config.configs[name])
         return service
+    }
+
+    getLocalService (...args) {
+        return Config._getLocalService(...args)
     }
 }
