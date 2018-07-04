@@ -22,13 +22,15 @@ const urls = () => {
 
 export default {
     get (req, res) {
-        const url = bus.root ? urls()[req.params.name] : `https://${host}${req.originalUrl}`;
+        const
+            {name} = req.params,
+            url = bus.root ? urls()[name] : `https://${host}${req.originalUrl}`;
         if (url)
             (DEV ? Promise.resolve(true) : checkSession(req))
                 .then(found => {
                     if (!found) return res.send(401)
                     request({url, method: "GET", headers: {cookie: req.headers.cookie}})
-                        .on('error', e => error('imageProxy pipe error', cam, e))
+                        .on('error', ({message}) => error('imageProxy pipe error', name, message))
                         .pipe(res)
                 })
     }
