@@ -11,26 +11,20 @@ export function createServer ({app, port, domain, email}) {
             webrootPath: `/tmp/acme-challenges/`
         }),
         approveDomains = (options, certs, cb) => {
-            // This is where you check your database and associated
-            // email addresses with domains and agreements and such
-
-            // Opt-in to submit stats and get important updates
-            options.communityMember = false
-
-            // If you wish to replace the default challenge plugin, you may do so here
             options.challenges = {'http-01': challenge}
+            options.email = email
 
             // The domains being approved for the first time are listed in opts.domains
             // Certs being renewed are listed in certs.altnames
             if (certs)
                 options.domains = certs.altnames
             else
-                Object.assign(options, {email, agreeTos: true, domains: [domain]})
+                Object.assign(options, {agreeTos: true, domains: [domain]})
 
             cb(null, {options, certs})
         },
         greenlock = require('greenlock').create({
-            version: 'draft-11',
+            version: 'draft-12',
             server: 'https://acme-v02.api.letsencrypt.org/directory',
             //server: 'https://acme-staging-v02.api.letsencrypt.org/directory',
             approveDomains,
