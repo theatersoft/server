@@ -33,12 +33,12 @@ export function createServer ({app, port, domain, email}) {
 
     // handles acme-challenge and redirects to https
     require('http').createServer(greenlock.middleware(require('redirect-https')()))
-        .listen(80, function () {
+        .listen(80, '0.0.0.0', function () {
             log("Listening for ACME http-01 challenges on", this.address())
         })
 
     return require('https').createServer(greenlock.tlsOptions, greenlock.middleware(app))
-        .listen(port, function () {
+        .listen(port, '0.0.0.0', function () {
             log("Listening for ACME tls-sni-01 challenges and serve app on", this.address())
         })
 }

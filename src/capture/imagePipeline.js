@@ -19,7 +19,7 @@ export function Pipeline (device, base) {
 
     // spawn gstreamer pipeline to send jpeg stream
     const spawnPipeline = cb => {
-        const pipeline = `v4l2src device=/dev/cctv${device} norm=NTSC ! video/x-raw,format=YUY2,width=640,height=480,framerate=30000/1001,interlace-mode=interleaved ! deinterlace method=2 ! videorate ! video/x-raw,framerate=4/1 ! jpegenc ! multipartmux ! tcpserversink port=${tcpPort}`
+        const pipeline = `v4l2src device=/dev/cctv${device} norm=NTSC ! video/x-raw,format=YUY2,width=640,height=480,framerate=30000/1001,interlace-mode=interleaved ! deinterlace method=2 ! videorate ! video/x-raw,framerate=4/1 ! jpegenc ! multipartmux ! tcpserversink port=${tcpPort} host=127.0.0.1`
         let env = process.env
 //        if (device == '3')
 //            env.GST_DEBUG = 3
@@ -97,7 +97,7 @@ export function Pipeline (device, base) {
             res.type('image/jpeg')
             res.send(jpeg)
         })
-        server = http.createServer(app).listen(port)
+        server = http.createServer(app).listen(port, '0.0.0.0')
         log('Listening on port ' + port)
     }
 

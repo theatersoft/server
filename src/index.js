@@ -52,7 +52,7 @@ export function start ({time = false}) {
                 if (port && config.letsencrypt && port === letsencrypt.port)
                     server.resolve(createServer({app, port, ...letsencrypt}))
                 else
-                    server.resolve(https.createServer({key: read('server.key'), cert: read('server.cer')}, app).listen(port))
+                    server.resolve(https.createServer({key: read('server.key'), cert: read('server.cer')}, app).listen(port, '0.0.0.0'))
                 log('Listening on port ' + port)
             }
             catch (e) {
