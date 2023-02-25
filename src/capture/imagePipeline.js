@@ -81,8 +81,8 @@ export function Pipeline (device, base) {
                 }
             } while (length)
         })
-        client.on('error', error => {
-            error('client error ' + error)
+        client.on('error', e => {
+            error('client error ' + e)
             if (client)
                 setTimeout(connectTcp, 500)
         })
