@@ -1,7 +1,7 @@
 import {log, error} from '@theatersoft/bus'
 import {THEATERSOFT_CONFIG_HOME} from './config'
 
-export function createServer ({app, port, domain, email}) {
+export function createServer ({app, port, domain, email, production, debug}) {
     const
         store = require('le-store-certbot').create({
             configDir: `${THEATERSOFT_CONFIG_HOME}/acme/etc`,
@@ -25,10 +25,12 @@ export function createServer ({app, port, domain, email}) {
         },
         greenlock = require('greenlock').create({
             version: 'draft-12',
-            server: 'https://acme-v02.api.letsencrypt.org/directory',
-            //server: 'https://acme-staging-v02.api.letsencrypt.org/directory',
+            server: production 
+                    ? 'https://acme-v02.api.letsencrypt.org/directory'
+                    : 'https://acme-staging-v02.api.letsencrypt.org/directory',
             approveDomains,
-            store
+            store,
+            debug
         })
 
     // handles acme-challenge and redirects to https
