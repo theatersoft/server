@@ -4,13 +4,13 @@ import {Config, THEATERSOFT_CONFIG_HOME} from './config'
 import web from './web'
 import rpc from './rpc'
 import imageProxy from './imageProxy'
-import {createServer} from './letsencrypt'
 import './settings'
 import {LocalServiceManager} from './lib'
 import {ServiceManager} from './serviceManager'
 
 const
     fs = require('fs'),
+    util = require('util'),
     read = n => {try {return fs.readFileSync(`${THEATERSOFT_CONFIG_HOME}/${n}`, 'utf8').trim()} catch (e) {}},
     port = Number(process.env.PORT),
     auth = process.env.AUTH,
@@ -48,9 +48,22 @@ export function start ({time = false}) {
                 }, express.json(), rpc.post)
                 app.get('/theatersoft/image/:name', imageProxy.get)
 
-                const letsencrypt = {port, ...config.letsencrypt}
-                if (port && config.letsencrypt && port === letsencrypt.port)
-                    server.resolve(createServer({app, port, ...letsencrypt}))
+                if (config.letsencrypt) {
+                    // https://git.rootprojects.org/root/greenlock.js/src/branch/master/MIGRATION_GUIDE.md#greenlock-express-example
+                    require('greenlock-express')
+                    .init({
+                        packageRoot: __dirname,
+                        configDir: `${THEATERSOFT_CONFIG_HOME}/greenlock.d/config.json`,
+                        staging: config.letsencrypt.staging,
+                        cluster: false,
+                        maintainerEmail: config.letsencrypt.email,
+                        notify: (ev, args) => log(util.format(ev, args))
+                    })
+                    .serve(g => {
+                        g.serveApp(app)
+                        server.resolve(g.httpsServer())
+                    })
+                }
                 else
                     server.resolve(https.createServer({key: read('server.key'), cert: read('server.cer')}, app).listen(port, '0.0.0.0'))
                 log('Listening on port ' + port)
